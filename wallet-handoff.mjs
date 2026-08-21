@@ -124,25 +124,34 @@ async function prepareBadCoin(btn) {
     note("BadCoin Chrome wallet not detected. Reload this page after loading the extension.", "warn");
     return;
   }
-  if (!connection || connection.locked || !connection.primaryAddress) {
-    const status = await connectBadCoin();
-    if (!status || status.locked || !status.primaryAddress) return;
-  }
   const hex = payloadHex();
   if (!hex) {
     note("Create a GLY1 message first.", "warn");
     return;
   }
+  if (!connection || connection.locked || !connection.primaryAddress) {
+    const status = await connectBadCoin();
+    if (!status || status.locked || !status.primaryAddress) return;
+    note("Wallet connected. Click Prepare with BadCoin Wallet again to open the wallet confirm window.", "ok");
+    return;
+  }
 
   const prior = btn.textContent;
+  const confirmRequestId = typeof p.beginGlyphConfirm === "function" ? p.beginGlyphConfirm() : null;
   btn.disabled = true;
   btn.textContent = "PREPARING";
-  note("Asking the BadCoin wallet to prepare the inscription transaction.", "");
+  note(
+    confirmRequestId
+      ? "Wallet confirm window opened. Preparing the inscription transaction."
+      : "Asking the BadCoin wallet to prepare the inscription transaction. If no wallet window opens, allow popups for cipherglyph.org.",
+    "",
+  );
   output("");
   try {
     const prepared = await p.prepareGlyph({
       payloadHex: hex,
       recipient: anchorAddress(),
+      ...(confirmRequestId ? { confirmRequestId } : {}),
     });
     const fee = Number(prepared?.feeBad ?? 0);
     const txid = String(prepared?.txid ?? "");
