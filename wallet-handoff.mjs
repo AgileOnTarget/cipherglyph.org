@@ -9,6 +9,8 @@
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
+let connection = null;
+
 function payloadHex() {
   return ($("[data-payload-hex]")?.textContent ?? "").replace(/\s+/g, "").toLowerCase();
 }
@@ -36,6 +38,38 @@ function provider() {
   return p && typeof p.prepareGlyph === "function" ? p : null;
 }
 
+function canConnect(p) {
+  return p && typeof p.connect === "function";
+}
+
+function setAddressFields(address) {
+  if (!address) return;
+  for (const selector of ["[data-address]", "[data-lookup-input]"]) {
+    const el = $(selector);
+    if (!el) continue;
+    el.value = address;
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+}
+
+function describeConnection(status) {
+  if (!status?.walletId) {
+    return "BadCoin wallet connected, but no wallet has been created or imported yet.";
+  }
+  if (status.locked) {
+    return "BadCoin wallet connected. Unlock it from the extension popup, then come back here.";
+  }
+  if (status.primaryAddress) {
+    return `BadCoin wallet connected: ${shortAddress(status.primaryAddress)}.`;
+  }
+  return "BadCoin wallet connected, but no public address is available yet.";
+}
+
+function shortAddress(address) {
+  if (!address || address.length <= 14) return address || "";
+  return `${address.slice(0, 8)}...${address.slice(-6)}`;
+}
+
 function providerErrorMessage(error) {
   const code = error?.code ?? "";
   if (code === "WALLET.PASSPHRASE_REQUIRED") {
@@ -53,11 +87,46 @@ function providerErrorMessage(error) {
   return error?.message ?? "BadCoin wallet prepare failed.";
 }
 
+async function connectBadCoin() {
+  const p = provider();
+  if (!p) {
+    connection = null;
+    note("BadCoin Chrome wallet not detected. Reload this page after loading the extension.", "warn");
+    refreshButton();
+    return null;
+  }
+  if (!canConnect(p)) {
+    connection = null;
+    note("BadCoin Chrome wallet detected, but this build needs the connect update. Rebuild and reload the extension.", "warn");
+    refreshButton();
+    return null;
+  }
+
+  note("Connecting to the BadCoin wallet.", "");
+  try {
+    const status = await p.connect();
+    connection = status;
+    if (status?.primaryAddress) setAddressFields(String(status.primaryAddress));
+    note(describeConnection(status), status?.walletId && !status?.locked ? "ok" : "warn");
+    refreshButton();
+    return status;
+  } catch (error) {
+    connection = null;
+    note(providerErrorMessage(error), "warn");
+    refreshButton();
+    return null;
+  }
+}
+
 async function prepareBadCoin(btn) {
   const p = provider();
   if (!p) {
     note("BadCoin Chrome wallet not detected. Reload this page after loading the extension.", "warn");
     return;
+  }
+  if (!connection || connection.locked || !connection.primaryAddress) {
+    const status = await connectBadCoin();
+    if (!status || status.locked || !status.primaryAddress) return;
   }
   const hex = payloadHex();
   if (!hex) {
@@ -104,10 +173,20 @@ function refreshButton() {
   for (const btn of $$("[data-wallet-badcoin]")) {
     btn.disabled = !p;
     btn.setAttribute("aria-disabled", p ? "false" : "true");
-    btn.textContent = p ? "PREPARE WITH BADCOIN WALLET" : "LOAD BADCOIN WALLET";
+    if (!p) {
+      btn.textContent = "LOAD BADCOIN WALLET";
+    } else if (!connection || connection.locked || !connection.primaryAddress) {
+      btn.textContent = "CONNECT BADCOIN WALLET";
+    } else {
+      btn.textContent = "PREPARE WITH BADCOIN WALLET";
+    }
   }
   if (p) {
-    note("BadCoin Chrome wallet detected. Create a Glyph, then prepare the inscription.", "ok");
+    if (connection) {
+      note(describeConnection(connection), connection.walletId && !connection.locked ? "ok" : "warn");
+    } else {
+      note("BadCoin Chrome wallet detected. Connect it, then prepare the inscription.", "ok");
+    }
   } else {
     note("Load the BadCoin Chrome wallet extension, then reload this page.", "warn");
   }
@@ -121,7 +200,10 @@ export function initWalletHandoff(root = document) {
   }
   window.addEventListener("badcoin#initialized", refreshButton);
   refreshButton();
-  setTimeout(refreshButton, 250);
+  setTimeout(() => {
+    refreshButton();
+    if (provider()) connectBadCoin();
+  }, 250);
 }
 
 if (typeof document !== "undefined") initWalletHandoff();
