@@ -494,14 +494,16 @@
       </div>
       <div class="mast-nav">
         <span class="gly1">GLY1</span>
-        <a href="index.html">CREATE</a>
-        <a href="#handoff">INSCRIBE SOON</a>
-        <a href="#explore">EXPLORE</a>
+        <a href="index.html">HOME</a>
+        <a href="about.html">ABOUT</a>
         <a href="cipherglyph.html">LEARN</a>
+        <a href="privacy.html">PRIVACY</a>
+        <a href="support.html">SUPPORT</a>
+        <a href="index.html#handoff">INSCRIBE SOON</a>
       </div>
     </div>
     <p class="tag">Human presence. Permanently <span>inscribed.</span></p>
-    <p class="notice">About CipherGlyph and BadGlyph. Create, encode, copy, and export are live on the <a href="index.html">home page</a>. INSCRIBE is coming soon. This page does not request HPP burns, does not connect to the treasury, and cannot spend or broadcast.</p>
+    <p class="notice">About CipherGlyph, BadGlyph, HPP, and the Teacher Kit. Create, encode, copy, and export are live on the <a href="index.html">home page</a>. INSCRIBE is coming soon. This page does not request HPP burns, does not connect to the treasury, and cannot spend or broadcast.</p>
     <p>HPP is the human gate for inscription. Get the app before public inscription opens:</p>
     <ul>
       <li><a href="https://apps.apple.com/app/human-presence-protocol-hpp/id6762528053">App Store: Human Presence Protocol</a></li>
@@ -591,188 +593,52 @@
     </ul>
     </section>
     <div class="rule"></div>
-    <section id="create">
-      <h2>YOUR GLYPH</h2>
-      <p class="lede">Type a message. The page draws CipherGlyphs. Those letters are what would go on BadCoin. Ordinals carries pictures. BadGlyph carries Glyphs. The public creator is the <a href="index.html">home page</a>; this page keeps the about material and project context. The writing system itself is taught on the <a href="cipherglyph.html">CipherGlyph page</a>.</p>
-      <p class="need"><strong>You will need the HPP app on your phone when inscription opens.</strong> It is free, it is on the App Store, and it is what proves a person is here. Your message is saved on this device while you go and get the app.</p>
-
-      <div class="workbench">
-      <div class="work-controls">
-      <details class="panel" open>
-        <summary>Compose</summary>
-        <label for="glyph-message">Message</label>
-        <textarea id="glyph-message" data-cg-plain rows="4" spellcheck="false"
-                  maxlength="46" aria-label="CipherGlyph message">KILROY WAS HERE</textarea>
-        <p class="note" data-byte-budget aria-live="polite">0 of 80 bytes</p>
-        <div class="row">
-          <div>
-            <label>Mode
-              <select data-cg-mode aria-label="CipherGlyph mode">
-                <option value="plain" selected>Plain</option>
-                <option value="caesar">Caesar</option>
-                <option value="vigenere">Vigenere</option>
-              </select>
-            </label>
-          </div>
-          <div>
-            <label>Key
-              <input data-cg-key type="text" value="7" autocomplete="off" aria-label="CipherGlyph key">
-            </label>
-          </div>
-        </div>
-        <p class="small">The page stops at 80 bytes. That is 0 to 46 letters: A-Z, space, comma, period. Same OP_RETURN Bitcoin and Dogecoin already relay. Lowercase is stored as uppercase. Caesar and Vigenere change the drawing, not the bytes.</p>
-        <p class="small" data-cg-key-hint></p>
-        <div class="row">
-          <div>
-            <label>Columns
-              <input data-cg-cols type="number" value="20" min="4" max="60" aria-label="Glyph columns">
-            </label>
-          </div>
-          <div>
-            <label>Cell px
-              <input data-cg-cell type="number" value="40" min="22" max="80" aria-label="Glyph cell size">
-            </label>
-          </div>
-        </div>
-        <div class="btn-row">
-          <button type="button" data-cg-render>Render</button>
-          <button type="button" class="secondary" data-cg-sample>Sample</button>
-        </div>
-      </details>
-
-      <details class="panel">
-        <summary>Glyph keyboard</summary>
-        <p class="small">Each tap appends a letter to the message.</p>
-        <div class="keyboard" data-cg-kbd></div>
-      </details>
-      </div>
-
-      <details class="panel" open>
-        <summary>Glyph sheet</summary>
-        <p class="btn-row">
-          <button type="button" data-export-pdf>EXPORT PDF</button>
-          <button type="button" class="secondary" data-cg-copy>COPY STREAM</button>
-        </p>
-        <p class="small">Saves a local receipt: the Glyphs, the message, the stream, the hex, the BadCoin address, and any transaction fields this page actually has. The first Glyph prints its txid. Other messages stay Txid: none.</p>
-        <div class="receipt">
-          <div class="receipt-head">
-            <span class="gly1">GLY1</span>
-            <span class="receipt-title">BADGLYPH INSCRIPTION</span>
-            <svg class="mark sm" viewBox="0 0 80 92" aria-hidden="true">
-              <polygon points="40,4 74,24 74,68 40,88 6,68 6,24" fill="none" stroke="currentColor" stroke-width="5"/>
-              <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square">
-                <line x1="40" y1="22" x2="40" y2="70"/>
-                <line x1="30" y1="30" x2="50" y2="30"/>
-                <line x1="24" y1="44" x2="52" y2="44"/>
-                <line x1="32" y1="58" x2="48" y2="58"/>
-              </g>
-              <circle cx="58" cy="44" r="4" fill="#f7f3e8"/>
-            </svg>
-          </div>
-          <div class="receipt-body">
-            <svg class="mark receipt-watermark" viewBox="0 0 80 92" aria-hidden="true">
-              <polygon points="40,4 74,24 74,68 40,88 6,68 6,24" fill="none" stroke="currentColor" stroke-width="3"/>
-              <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
-                <line x1="40" y1="22" x2="40" y2="70"/>
-                <line x1="30" y1="30" x2="50" y2="30"/>
-                <line x1="24" y1="44" x2="52" y2="44"/>
-                <line x1="32" y1="58" x2="48" y2="58"/>
-              </g>
-              <circle cx="58" cy="44" r="3.2" fill="#e36a1a"/>
-            </svg>
-            <div class="stage-wrap"><div data-cg-stage></div></div>
-            <label>Encoded letters</label>
-            <div class="codepane" data-cg-letters></div>
-            <label>Symbol stream</label>
-            <div class="codepane" data-cg-stream></div>
-            <dl class="receipt-facts">
-              <dt>ADDRESS</dt><dd data-receipt-address>none</dd>
-              <dt>TXID</dt><dd data-receipt-txid>none</dd>
-              <dt>BLOCK</dt><dd data-receipt-block>none</dd>
-              <dt>CONFIRMATIONS</dt><dd data-receipt-confirmations>none</dd>
-              <dt>NUMBER</dt><dd data-receipt-number>pending</dd>
-            </dl>
-          </div>
-          <div class="receipt-end">
-            <div class="receipt-foot">
-              <span>Local receipt</span>
-              <span>GLY1 · CHAIN: BADCOIN · TYPE: GLYPH INSCRIPTION</span>
-            </div>
-            <div class="seal" aria-label="Verification unavailable">VERIFICATION<br>UNAVAILABLE</div>
-          </div>
-        </div>
-      </details>
-      </div>
-
-      <details class="panel">
-        <summary>Alphabet key</summary>
-        <table class="keytable" data-cg-keytable></table>
-      </details>
-
-      <details class="panel">
-        <summary>Decode a symbol stream</summary>
-        <p class="small">Code grammar: SHAPE + TICKS + DOT (for example COR2L). SPACE for space, DOT3 for period, DOT2 for comma. Teaching cipher, not a lock.</p>
-        <textarea data-cg-decode rows="3" spellcheck="false"
-                  placeholder="COR2L TRI2R ZIG3L ZIG3L VER3R" aria-label="CipherGlyph symbol stream"></textarea>
-        <p class="btn-row"><button type="button" class="secondary" data-cg-decode-go>DECODE STREAM</button></p>
-        <p>Recovered: <strong data-cg-recovered></strong></p>
-      </details>
-
-      <div class="work-chain">
-      <details class="panel" open>
-        <summary>On-chain GLY1 (encode)</summary>
-        <p class="small">This is the payload that would go in the OP_RETURN: the plain letters, not the Caesar or Vigenere drawing. Public inscription is coming soon, so nothing is sent from this static page.</p>
-        <p>Chain message: <strong data-chain-message></strong></p>
-        <p><strong>ENCODED PAYLOAD</strong>
-           <button type="button" class="secondary" data-copy-hex>COPY HEX</button></p>
-        <pre class="codepane" data-payload-hex></pre>
-        <p class="note" data-payload-hex-note></p>
-        <p class="small">Paste this into Decode a Glyph below. It decodes in your browser, with no server involved, which is the whole point: what is on the chain can be reconstructed from the chain.</p>
-      </details>
-
-      <details class="panel" open>
-        <summary>Decode a Glyph (from hex)</summary>
-        <p class="small">Paste the raw GLY1 payload bytes as hex. This reconstructs the CipherGlyphs here, in your browser.</p>
-        <textarea data-decode-input rows="3" spellcheck="false"
-                  placeholder="474c5931 11 ..." aria-label="GLY1 payload hex"></textarea>
-        <p class="btn-row"><button type="button" data-decode-go>DECODE HEX</button></p>
-        <p><span data-decode-badge></span></p>
-        <p class="note" data-decode-note></p>
-        <div class="stage-wrap"><div data-decode-sheet></div></div>
-        <dl data-decode-meta></dl>
-      </details>
-      </div>
+    <section id="about-cipherglyph">
+      <h2>WHAT CIPHERGLYPH IS</h2>
+      <p class="lede">CipherGlyph is a geometric alphabet by Tom Friend. Each letter becomes one Glyph: a base shape, tick marks, and a dot on the left or the right. It is designed to be readable by people, teachable in a classroom, and reconstructable from raw chain data.</p>
+      <p class="lede"><strong>This is a teaching cipher, not a lock.</strong> Plain, Caesar, and Vigenere modes are there for learning and play. The Glyphs are meant to carry writing, not hide secrets.</p>
+      <ul class="props">
+        <li>WRITING SYSTEM</li>
+        <li>TEACHER KIT</li>
+        <li>GLY1 PAYLOAD</li>
+        <li>STATIC CREATOR</li>
+      </ul>
     </section>
     <div class="rule"></div>
-    <section id="handoff">
-      <h2>INSCRIBE ON BADCOIN</h2>
-      <p class="lede">Inscribe your Glyph on the BadCoin blockchain with HPP presence credits.</p>
-      <p class="small">Coming soon for visitors. This public static page does not request an HPP burn, does not contact the treasury, and cannot broadcast a transaction.</p>
-      <p>For now, create the Glyph, copy the stream or hex, and export the receipt. Mainnet HPP inscription remains staged behind the operator gate.</p>
-      <p><input data-address type="text" autocomplete="off" placeholder="paste your BadCoin address" aria-label="Your BadCoin address" value="BADCoinT4LZuc2vXoAk8sPhsMRnzeqscPJ"></p>
-      <p><button type="button" disabled aria-disabled="true">INSCRIBE COMING SOON</button></p>
-      <p class="note" data-handoff-note></p>
-      <p><canvas data-handoff-qr hidden></canvas></p>
-      <pre data-handoff-url></pre>
-      <p class="note" data-handoff-resume></p>
+    <section id="teacher-kit">
+      <h2>TEACHER KIT</h2>
+      <p class="lede">The Teacher Kit is the public learning material for CipherGlyph: lesson framing, classroom use, and the alphabet history behind the marks. It is the place to start if you want to understand the writing system before touching the chain.</p>
+      <p><a href="https://github.com/AgileOnTarget/Cipherglyph_Teacher_Kit">Open the CipherGlyph Teacher Kit</a></p>
     </section>
     <div class="rule"></div>
-    <section id="explore">
-      <h2>EXPLORE</h2>
-      <p class="lede">Rebuilt from the raw chain data, not from our records.</p>
-
-      <h3>GLYPHS FOR AN ADDRESS</h3>
-      <p>
-        <input data-lookup-input type="text" inputmode="latin" autocomplete="off"
-               placeholder="paste a BadCoin address" aria-label="BadCoin address">
-        <button type="button" data-lookup-go>LOOK UP</button>
-      </p>
-      <p class="note" data-lookup-note></p>
-      <div data-lookup-results></div>
+    <section id="hpp">
+      <h2>HPP AND PRESENCE</h2>
+      <p class="lede">HPP is the human gate for inscription. When inscription opens, the idea is simple: create a Glyph on a computer, prove human presence with the HPP app on a phone, then inscribe the GLY1 payload.</p>
+      <p>Get HPP before public inscription opens:</p>
+      <ul>
+        <li><a href="https://apps.apple.com/app/human-presence-protocol-hpp/id6762528053">App Store: Human Presence Protocol</a></li>
+        <li><a href="https://humanpresenceprotocol.com">humanpresenceprotocol.com</a></li>
+      </ul>
+      <p class="small">Today, the public site does not request an HPP burn. INSCRIBE remains disabled as coming soon.</p>
     </section>
-    <p class="foot">GLY1 · CHAIN: BADCOIN · TYPE: GLYPH INSCRIPTION · STATIC PUBLIC MODE</p>
+    <div class="rule"></div>
+    <section id="badglyph">
+      <h2>BADGLYPH ON BADCOIN</h2>
+      <p class="lede">BadGlyph is the BadCoin deployment of CipherGlyph. Ordinals carries pictures. BadGlyph carries Glyphs: the letters themselves, packed into GLY1. The home page lets you type a message, render the Glyphs, copy the stream, copy the payload hex, and export a receipt.</p>
+      <p><a href="index.html">Create a Glyph</a></p>
+    </section>
+    <div class="rule"></div>
+    <section id="viewer">
+      <h2>IPHONE READER</h2>
+      <p class="lede">CipherGlyph Viewer is the read-only iPhone app. It scans or pastes a public address and reads GLY1 inscriptions. It is not a wallet. It has no keys, no signing, no sending, no account, and no inscription path.</p>
+      <p><a href="support.html">Viewer support</a> · <a href="privacy.html">Privacy policy</a></p>
+    </section>
+    <div class="rule"></div>
+    <section id="boundary">
+      <h2>WHAT IS LIVE</h2>
+      <p class="lede">Live now: create, render, copy, learn, and export. Coming soon: public HPP-gated inscription. Not live: treasury access, signing, sending, broadcasting, hosted index lookup, or any HPP VERIFIED claim for visitor-created Glyphs.</p>
+    </section>
+    <p class="foot">CIPHERGLYPH · GLY1 · CHAIN: BADCOIN · STATIC PUBLIC MODE</p>
   </main>
-  <script type="module" src="./compose.mjs"></script>
-  <script type="module" src="./explore.mjs"></script>
 </body>
 </html>
