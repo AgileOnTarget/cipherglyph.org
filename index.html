@@ -405,6 +405,7 @@
       border: 1px solid var(--rules);
       padding: 12px;
       min-height: 8rem;
+      max-width: 100%;
       border-radius: 8px;
       background-image:
         linear-gradient(#d8d1bb55 1px, transparent 1px),
@@ -413,8 +414,10 @@
     }
     .stage-wrap img {
       display: block;
-      width: 100%;
+      width: auto;
+      max-width: 100%;
       height: auto;
+      margin: 0 auto;
     }
     .codepane {
       white-space: pre-wrap;
@@ -536,18 +539,7 @@
         </div>
         <p class="small">The page stops at 80 bytes. That is 0 to 46 letters: A-Z, space, comma, period. Same OP_RETURN Bitcoin and Dogecoin already relay. Lowercase is stored as uppercase. Caesar and Vigenere change the drawing, not the bytes.</p>
         <p class="small" data-cg-key-hint></p>
-        <div class="row">
-          <div>
-            <label>Columns
-              <input data-cg-cols type="number" value="20" min="4" max="60" aria-label="Glyph columns">
-            </label>
-          </div>
-          <div>
-            <label>Cell px
-              <input data-cg-cell type="number" value="40" min="22" max="80" aria-label="Glyph cell size">
-            </label>
-          </div>
-        </div>
+        <p class="small">Sheet size is locked for the 80-byte ceiling: the full 46-letter message renders as a compact 10-column sheet.</p>
         <div class="btn-row">
           <button type="button" data-cg-render>Render</button>
           <button type="button" class="secondary" data-cg-sample>Sample</button>

@@ -17,6 +17,8 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
 const PLACEHOLDER_BURN_REF = new Uint8Array(8);
+const SHEET_COLS = 10;
+const SHEET_CELL = 24;
 const SAMPLES = [
   "KILROY WAS HERE",
   "HELLO WORLD",
@@ -43,11 +45,11 @@ function key() {
 }
 
 function cols() {
-  return $("[data-cg-cols]")?.value || 20;
+  return SHEET_COLS;
 }
 
 function cell() {
-  return $("[data-cg-cell]")?.value || 40;
+  return SHEET_CELL;
 }
 
 function rawText() {
@@ -521,7 +523,7 @@ export function initCompose(root = document) {
     setHint();
     renderAll();
   });
-  ["data-cg-plain", "data-cg-key", "data-cg-cols", "data-cg-cell"].forEach((attr) => {
+  ["data-cg-plain", "data-cg-key"].forEach((attr) => {
     $(`[${attr}]`, root)?.addEventListener("input", renderAll);
   });
   $("[data-cg-render]", root)?.addEventListener("click", renderAll);
