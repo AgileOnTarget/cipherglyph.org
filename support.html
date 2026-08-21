@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Support · CipherGlyph</title>
+  <title>Support · CipherGlyph Viewer</title>
   <link rel="icon" href="assets/mark.png">
   <link rel="stylesheet" href="css/site.css">
 </head>
@@ -25,40 +25,82 @@
     </div>
   </nav>
   <main class="wrap">
-    <p class="tag">SUPPORT</p>
-    <h1>SUPPORT</h1>
-    <p class="lead">CipherGlyph Viewer is a reader. If something fails, start here.</p>
-    <p>If you need help, swing by the BadCoin Telegram at <a href="https://t.me/badcoinnet">@badcoinnet</a>. To write it down instead, email <a href="mailto:support@cipherglyph.org">support@cipherglyph.org</a>.</p>
+    <p class="tag">APPLE SUPPORT URL</p>
+    <h1>Support</h1>
+    <p class="lead">Help for CipherGlyph Viewer, the read-only iPhone app for viewing GLY1 CipherGlyph inscriptions.</p>
+
+    <div class="card">
+      <p><strong>Need help?</strong> Email <a href="mailto:support@cipherglyph.org">support@cipherglyph.org</a>. Include your iPhone model, iOS version, what you tapped, and the address or txid you were trying to view. Do not send private keys, seed phrases, wallet files, or passwords.</p>
+    </div>
+
+    <h2>App Store links</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Support URL</th>
+          <td><a href="https://cipherglyph.org/support.html">https://cipherglyph.org/support.html</a></td>
+        </tr>
+        <tr>
+          <th>Privacy Policy URL</th>
+          <td><a href="https://cipherglyph.org/privacy.html">https://cipherglyph.org/privacy.html</a></td>
+        </tr>
+        <tr>
+          <th>Contact</th>
+          <td><a href="mailto:support@cipherglyph.org">support@cipherglyph.org</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>What CipherGlyph Viewer does</h2>
+    <p>CipherGlyph Viewer scans or accepts a pasted public address, looks for GLY1 inscriptions associated with that address, and displays the message as CipherGlyphs. It is a reader.</p>
+
     <details open>
       <summary>How do I read a CipherGlyph?</summary>
-      <p>Open CipherGlyph Viewer, continue past Welcome, then Scan address or Paste address. The app looks up GLY1 on the chain's issuer history and shows Glyphs with the letters underneath.</p>
+      <p>Open CipherGlyph Viewer, tap Scan address or Paste address, and enter a public address. For BadCoin, the app looks up the known issuer history and filters GLY1 payloads by the address hash160.</p>
     </details>
+
     <details>
       <summary>Why does Bitcoin or Dogecoin say it is not configured?</summary>
-      <p>The app recognizes those address formats. Lookup for those chains is not connected yet. BadCoin lookup works. The app says this on screen on purpose.</p>
+      <p>The app may recognize those address formats, but lookup for those chains is not connected yet. The app says this on screen instead of pretending the wall is empty.</p>
     </details>
+
     <details>
-      <summary>Is this a wallet?</summary>
-      <p>No. No keys, no account, no send. Scanning an address does not mean you own it.</p>
+      <summary>Is CipherGlyph Viewer a wallet?</summary>
+      <p>No. It has no private keys, no seed phrase import, no signing, no sending, no receiving, no balance, and no wallet account. Scanning an address does not prove you own it.</p>
     </details>
+
     <details>
-      <summary>Can I write a CipherGlyph in this app?</summary>
-      <p>No. The iPhone app does not inscribe. This website does not inscribe either.</p>
+      <summary>Can the app inscribe a new Glyph?</summary>
+      <p>No. CipherGlyph Viewer does not inscribe. The public website currently lets you compose, encode, export, and look up Glyphs. The INSCRIBE button is marked coming soon.</p>
     </details>
-    <details>
-      <summary>Where are the lesson plans?</summary>
-      <p>The Teacher Kit is public: <a href="https://github.com/AgileOnTarget/Cipherglyph_Teacher_Kit">github.com/AgileOnTarget/Cipherglyph_Teacher_Kit</a></p>
-    </details>
+
     <details>
       <summary>The camera was denied.</summary>
-      <p>Use Paste address. To turn the camera back on: Settings, CipherGlyph Viewer, Camera.</p>
+      <p>You can paste an address instead. To turn camera access back on, open iOS Settings, CipherGlyph Viewer, Camera.</p>
     </details>
+
+    <details>
+      <summary>The lookup says the explorer is unavailable.</summary>
+      <p>That means the app could not reach the public explorer at that moment. It does not mean the address has no Glyphs. Try again later or use the web page at <a href="https://cipherglyph.org/">cipherglyph.org</a>.</p>
+    </details>
+
+    <details>
+      <summary>How do I delete saved addresses?</summary>
+      <p>Delete saved addresses inside the app. Deleting CipherGlyph Viewer from your iPhone also deletes the local saved addresses, optional nicknames, and lookup cache.</p>
+    </details>
+
     <details>
       <summary>What iPhone does it need?</summary>
-      <p>iPhone, iOS 17 or later.</p>
+      <p>CipherGlyph Viewer requires iPhone with iOS 17 or later.</p>
     </details>
-    <h2>PRIVACY</h2>
-    <p>Full policy: <a href="privacy.html">Privacy Policy</a></p>
+
+    <details>
+      <summary>Where are the lesson plans?</summary>
+      <p>The Teacher Kit is public at <a href="https://github.com/AgileOnTarget/Cipherglyph_Teacher_Kit">github.com/AgileOnTarget/Cipherglyph_Teacher_Kit</a>.</p>
+    </details>
+
+    <h2>Privacy</h2>
+    <p>Read the full <a href="privacy.html">Privacy Policy</a>.</p>
   </main>
   <footer>
     <div class="footer-row">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Privacy · CipherGlyph</title>
+  <title>Privacy Policy · CipherGlyph Viewer</title>
   <link rel="icon" href="assets/mark.png">
   <link rel="stylesheet" href="css/site.css">
 </head>
@@ -25,51 +25,74 @@
     </div>
   </nav>
   <main class="wrap">
-    <p class="tag">PRIVACY</p>
+    <p class="tag">APPLE PRIVACY URL</p>
     <h1>Privacy Policy</h1>
-    <p class="lead">Effective 19 August 2026 · Agile On Target LLC</p>
+    <p class="lead">Effective 21 August 2026 · CipherGlyph Viewer · Agile On Target LLC</p>
+
     <div class="card">
-      <p><strong>Short version.</strong> CipherGlyph Viewer has no account. It does not collect analytics. Saved addresses stay on the iPhone. The camera reads a public address QR in the moment. No photo is stored or sent to us. Lookup asks a public block explorer for issuer history. We do not get a copy of that request beyond what the explorer itself logs.</p>
+      <p><strong>Short version.</strong> CipherGlyph Viewer is a read-only iPhone app. It has no account, no login, no wallet, no ads, and no analytics SDK. The app reads public blockchain data and stores saved addresses only on your device.</p>
     </div>
-    <h2>Who this covers</h2>
-    <p>This policy covers the iPhone app CipherGlyph Viewer and this website (cipherglyph.org). The Teacher Kit on GitHub is a separate public repository with its own GitHub privacy terms.</p>
-    <h2>What we do not collect</h2>
+
+    <h2>Developer</h2>
+    <p>CipherGlyph Viewer is provided by Agile On Target LLC. Privacy questions can be sent to <a href="mailto:support@cipherglyph.org">support@cipherglyph.org</a>.</p>
+
+    <h2>What this policy covers</h2>
+    <p>This policy covers the CipherGlyph Viewer iPhone app and the public pages at <a href="https://cipherglyph.org/">cipherglyph.org</a>, including the App Store Privacy Policy URL and Support URL.</p>
+
+    <h2>Data we do not collect</h2>
     <ul>
-      <li>No name, email, Apple ID, or account.</li>
-      <li>No advertising identifier, analytics SDK, or crash reporter.</li>
-      <li>No contacts. Share uses the system share sheet. The app does not read the address book.</li>
-      <li>No keys, seed phrases, or wallet files. This is a reader, not a wallet.</li>
-      <li>No photos from the camera roll. The scanner is for QR codes only.</li>
+      <li>No name, email address, phone number, Apple ID, account, or login.</li>
+      <li>No advertising identifier, tracking, advertising SDK, analytics SDK, or crash reporting SDK.</li>
+      <li>No contacts. Share uses the Apple system share sheet. The app does not read your address book.</li>
+      <li>No private keys, seed phrases, wallet files, signing, sending, receiving, balances, or transactions from your wallet.</li>
+      <li>No photos from your camera roll. The camera scanner is for QR codes only.</li>
+      <li>No precise location.</li>
     </ul>
-    <h2>What stays on the iPhone</h2>
+
+    <h2>Data stored on your device</h2>
     <table>
       <thead>
-        <tr><th>What</th><th>Where</th></tr>
+        <tr><th>Data</th><th>Purpose</th><th>Retention</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td>Saved addresses and optional nicknames</td>
-          <td>On this iPhone only. You can delete them in the app. Deleting the app deletes them.</td>
+          <td>Saved public addresses and optional nicknames</td>
+          <td>Let you revisit a Glyph wall without pasting the address again.</td>
+          <td>Stored on this device until you delete the saved address or delete the app.</td>
         </tr>
         <tr>
-          <td>Last decode cache for a saved address</td>
-          <td>On this iPhone only. Used when the explorer is unreachable. It is not a fresh check.</td>
+          <td>Last lookup result for a saved address</td>
+          <td>Show cached results when the public explorer is unavailable.</td>
+          <td>Stored on this device until replaced, deleted in the app, or removed when the app is deleted.</td>
         </tr>
       </tbody>
     </table>
-    <h2>What leaves the iPhone</h2>
-    <p>When you tap Look up, the app asks the public explorer for that chain's issuer (treasury) history, then keeps GLY1 payloads whose hash160 matches the address you scanned or pasted. The scanned address is never the explorer query.</p>
-    <p>Today only BadCoin lookup is connected. That call goes to the public BadCoin explorer. Bitcoin and Dogecoin walls are not configured yet, so those addresses are not sent to an explorer.</p>
-    <p>We do not operate that explorer. Its operator sees whatever a public web lookup would see.</p>
-    <h2>Camera</h2>
-    <p>The iPhone permission prompt says: CipherGlyph Viewer scans a QR code to read a public address. No photo is stored or sent anywhere. If you deny camera access, you can still paste an address.</p>
-    <h2>This website</h2>
-    <p>This site is static files on GitHub Pages. We do not run an account system or an analytics tag on these pages. GitHub, as host, may log requests per GitHub's own policy.</p>
+
+    <h2>Network requests</h2>
+    <p>When you look up a BadCoin address, CipherGlyph Viewer asks the public BadCoin explorer for the known issuer address history, then filters GLY1 payloads on your device by the hash160 of the address you entered. The app does not query the scanned address as a payment address.</p>
+    <p>The BadCoin explorer is a third-party public blockchain service. Its operator may receive ordinary technical logs such as IP address, request time, and requested URL. Agile On Target LLC does not receive an account, profile, or analytics feed from that explorer.</p>
+    <p>Bitcoin and Dogecoin lookup are not configured in the app at this time. If a chain is not configured, the app stops before sending that address to an explorer.</p>
+
+    <h2>Camera permission</h2>
+    <p>The app asks for camera access only to scan a public address QR code. No photo is stored by the app or sent to Agile On Target LLC. If you deny camera access, you can paste an address instead.</p>
+    <p>You can revoke camera access at any time in iOS Settings: Settings, CipherGlyph Viewer, Camera.</p>
+
+    <h2>Website</h2>
+    <p>The website is hosted as static files on GitHub Pages. We do not run user accounts, advertising tags, or analytics tags on these pages. GitHub may process standard hosting logs under GitHub's own terms and privacy policy.</p>
+    <p>The web address lookup uses a bundled public chain snapshot today because the public BadCoin explorer does not send browser CORS headers. If a future hosted index is added, this policy will be updated before that service collects or processes additional data.</p>
+
     <h2>Children</h2>
-    <p>The app is not directed at children under 13. We do not knowingly collect personal information from children.</p>
+    <p>CipherGlyph Viewer is not directed to children under 13, and we do not knowingly collect personal information from children.</p>
+
+    <h2>Delete your data</h2>
+    <p>Delete saved addresses inside the app. Deleting the app from your iPhone also deletes the app's local saved addresses, nicknames, and lookup cache.</p>
+    <p>Because we do not operate accounts for CipherGlyph Viewer, there is no server-side account profile to delete.</p>
+
+    <h2>Changes</h2>
+    <p>If this policy changes, the effective date at the top of this page will change. Material changes will be reflected on this page before they apply to new app behavior.</p>
+
     <h2>Contact</h2>
-    <p>Questions about this policy, or a request about data: <a href="mailto:support@cipherglyph.org">support@cipherglyph.org</a>.</p>
-    <p>If this policy changes, the date at the top will change.</p>
+    <p>Email <a href="mailto:support@cipherglyph.org">support@cipherglyph.org</a> for privacy questions, support requests, or data questions.</p>
   </main>
   <footer>
     <div class="footer-row">
