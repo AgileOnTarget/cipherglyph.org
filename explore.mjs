@@ -1,14 +1,14 @@
 /**
  * Explorer view. BACKLOG: ND-SITE-001, ND-INDEX-001. Journey J5.
  *
- * On localhost, LOOK UP asks the loopback index for GLY1 payloads whose
- * hash160 matches the pasted address, then draws CipherGlyphs from those
- * letters. On public static hosts it refuses honestly because there is no
- * hosted index service yet.
+ * LOOK UP asks the public BadCoin explorer for the issuer history, filters
+ * GLY1 payloads by the typed address hash160, and draws CipherGlyphs from
+ * those letters. If browser CORS blocks the explorer, it uses the bundled
+ * public chain snapshot so the reader still works.
  */
 import { validateAddress } from "./lib/address.mjs";
 import { buildAddressView, LOOKUP } from "./lib/explore-model.mjs";
-import { lookupAddressRequest } from "./lib/inscriber-client.mjs";
+import { lookupBadcoinAddress } from "./lib/badcoin-explorer-client.mjs";
 import { buildSheetSvg, paintSheet } from "./lib/cipherglyph-svg.mjs";
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -40,7 +40,7 @@ function renderItems(root, items) {
     const stage = document.createElement("div");
     stage.className = "stage-wrap";
     if (item.readable && item.message) {
-      const sheet = buildSheetSvg(item.message, { cols: 20, cell: 40 });
+      const sheet = buildSheetSvg(item.message, { cols: 10, cell: 24 });
       paintSheet(stage, sheet);
     }
     card.append(badge, msg, stage, meta);
@@ -48,26 +48,11 @@ function renderItems(root, items) {
   }
 }
 
-function isLocalHost(win = window) {
-  const h = win.location?.hostname || "";
-  return h === "127.0.0.1" || h === "localhost" || h === "";
-}
-
 function wireAddressLookup(root) {
   const input = $("[data-lookup-input]", root);
   const btn = $("[data-lookup-go]", root);
   const note = $("[data-lookup-note]", root);
   if (!input || !btn) return;
-  if (!isLocalHost()) {
-    btn.disabled = true;
-    btn.setAttribute("aria-disabled", "true");
-    setNote(
-      note,
-      "Address lookup is coming soon on the public site. Decode from GLY1 hex works in this browser today.",
-      "warn",
-    );
-    return;
-  }
 
   const run = async () => {
     const addressCheck = validateAddress(input.value, "mainnet");
@@ -77,16 +62,29 @@ function wireAddressLookup(root) {
       renderItems(root, []);
       return;
     }
-    setNote(note, "Looking up.", "");
-    const res = await lookupAddressRequest({ address: input.value.trim() });
-    const reachable = res.reachable !== false && res.reason !== "inscriber_unreachable";
+    setNote(note, "Looking up public BadCoin Glyphs.", "");
+    const res = await lookupBadcoinAddress({
+      address: input.value.trim(),
+      addressCheck,
+    });
+    const reachable = res.reachable !== false;
     const view = buildAddressView({
       reachable,
       items: reachable ? res.items || [] : null,
       addressCheck,
     });
     const tone = view.state === LOOKUP.OK ? "ok" : "warn";
-    setNote(note, view.message ?? (view.state === LOOKUP.OK ? `Found ${view.items.length}.` : ""), tone);
+    const suffix = res.source === "snapshot"
+      ? ` Loaded from the public chain snapshot generated ${res.snapshotGeneratedAt}.`
+      : "";
+    const truncation = res.truncated ? " Lookup hit the MVP history cap, so the list may be incomplete." : "";
+    const message = view.message ??
+      (view.state === LOOKUP.OK ? `Found ${view.items.length}.` : "") + suffix + truncation;
+    setNote(
+      note,
+      message,
+      tone,
+    );
     renderItems(root, view.items);
   };
 
