@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CipherGlyph</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 92'%3E%3Cpolygon points='40,4 74,24 74,68 40,88 6,68 6,24' fill='%23f7f3e8' stroke='%23173f33' stroke-width='3'/%3E%3Cg fill='none' stroke='%23173f33' stroke-width='2.5' stroke-linecap='square'%3E%3Cline x1='40' y1='22' x2='40' y2='70'/%3E%3Cline x1='30' y1='30' x2='50' y2='30'/%3E%3Cline x1='24' y1='44' x2='52' y2='44'/%3E%3Cline x1='32' y1='58' x2='48' y2='58'/%3E%3C/g%3E%3Ccircle cx='58' cy='44' r='3.2' fill='%23e36a1a'/%3E%3C/svg%3E">
+  <link rel="icon" href="assets/mark.png">
+  <link rel="stylesheet" href="css/site.css">
   <style>
     :root {
       --paper: #f7f3e8;
@@ -24,9 +25,9 @@
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E"),
         repeating-linear-gradient(145deg, #00000008 0 1px, transparent 1px 18px);
       font-family: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", ui-sans-serif, system-ui, sans-serif;
-      padding: 1.5rem 1.5rem 4rem;
+      padding: 0;
     }
-    main { max-width: 76rem; margin: 0 auto; }
+    main { max-width: 76rem; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
     .masthead { background: #fffaf0; border: 1px solid #d8cdb7; border-radius: 8px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 1.4rem; }
     .mast-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 0.8rem 1rem; border-bottom: 1px solid var(--rules); }
     .lockup { display: flex; align-items: center; gap: 0.85rem; }
@@ -52,8 +53,6 @@
     h1 span { color: var(--orange); }
     .tag { letter-spacing: 0.14em; text-transform: uppercase; font-size: clamp(0.85rem, 2.2vw, 1.25rem); margin: 0.85rem 1rem 1rem; text-align: center; font-weight: 800; }
     .tag span { color: var(--orange); }
-    .mast-nav { display: flex; gap: 1rem; align-items: center; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; }
-    .mast-nav a { text-decoration: none; color: inherit; }
     .gly1 { display: inline-block; border: 2px solid var(--orange); color: var(--orange); font-weight: 800; letter-spacing: 0.14em; padding: 0.2rem 0.5rem; font-size: 0.72rem; border-radius: 7px; background: #fffaf0; }
     .notice { border: 1px solid #d8cdb7; border-left: 5px solid var(--orange); padding: 0.85rem 1rem; margin: 0 1rem 1.1rem; font-size: 0.95rem; background: #fffaf0; box-shadow: inset 0 0 0 1px #ffffff80; }
     .rule { height: 1px; background: var(--rules); margin: 1.1rem 0 1.3rem; }
@@ -85,6 +84,22 @@
   </style>
 </head>
 <body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/mark.png" width="40" height="40" alt="">
+        <span>CIPHER<span class="glyph">GLYPH</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">HOME</a>
+        <a href="about.html">ABOUT</a>
+        <a class="active" href="cipherglyph.html">LEARN</a>
+        <a href="privacy.html">PRIVACY</a>
+        <a href="support.html">SUPPORT</a>
+        <a href="index.html#handoff">INSCRIBE SOON</a>
+      </div>
+    </div>
+  </nav>
   <main>
     <div class="masthead">
     <div class="mast-top">
@@ -95,15 +110,6 @@
           <div class="chain-standard">The human standard</div>
           <h1>CIPHER<span>GLYPH</span></h1>
         </div>
-      </div>
-      <div class="mast-nav">
-        <span class="gly1">GLY1</span>
-        <a href="index.html">HOME</a>
-        <a href="about.html">ABOUT</a>
-        <a href="cipherglyph.html">LEARN</a>
-        <a href="privacy.html">PRIVACY</a>
-        <a href="support.html">SUPPORT</a>
-        <a href="index.html#handoff">INSCRIBE SOON</a>
       </div>
     </div>
     <p class="tag">A writing system you can teach, then <span>verify.</span></p>
@@ -198,6 +204,22 @@
     </div>
     <p class="foot">GLY1 · CHAIN: BADCOIN · TYPE: TEACHING PAGE · LOCAL ONLY</p>
   </main>
+  <footer>
+    <div class="footer-row">
+      <span>
+        <a href="index.html">HOME</a>
+        &nbsp;·&nbsp;
+        <a href="about.html">ABOUT</a>
+        &nbsp;·&nbsp;
+        <a href="cipherglyph.html">LEARN</a>
+        &nbsp;·&nbsp;
+        <a href="privacy.html">PRIVACY</a>
+        &nbsp;·&nbsp;
+        <a href="support.html">SUPPORT</a>
+      </span>
+      <span>2026 Agile On Target LLC</span>
+    </div>
+  </footer>
   <script type="module" src="./cipherglyph-view.mjs"></script>
 </body>
 </html>
