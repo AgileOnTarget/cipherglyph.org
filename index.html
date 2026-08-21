@@ -574,7 +574,7 @@
         <h3>BadGlyph</h3>
         <p class="small">Create GLY1, export a receipt, and look up the current public BadCoin Glyphs by payload hash160.</p>
         <div class="wallet-actions">
-          <button type="button" disabled aria-disabled="true">BADCOIN CHROME WALLET SOON</button>
+          <button type="button" data-wallet-badcoin disabled aria-disabled="true">LOAD BADCOIN WALLET</button>
         </div>
       </article>
       <article class="chain-card" data-state="soon">
@@ -740,11 +740,11 @@
     <section id="handoff">
       <h2>INSCRIBE WITH YOUR WALLET</h2>
       <p class="lede">BadCoin, Dogecoin, and Bitcoin inscription will use a self-wallet handoff, starting with Chrome plugin wallets.</p>
-      <p class="small">Coming soon. The page will prepare GLY1 bytes for the wallet. The wallet user funds, signs, and broadcasts. This page does not request HPP burns, does not contact the treasury, does not read balances, and cannot spend.</p>
-      <p>For now, create the Glyph, copy the stream or hex, and export the receipt. BadCoin lookup is live below. Dogecoin and Bitcoin wallet handoff waits on the self-wallet specification.</p>
+      <p class="small">BadCoin Chrome wallet prepare is active when the extension is loaded. The wallet user funds, signs, and broadcasts. This page does not request HPP burns, does not contact the treasury, does not read balances, and cannot spend.</p>
+      <p>Create the Glyph, then prepare the BadCoin inscription through the Chrome wallet. BadCoin lookup is live below. Dogecoin and Bitcoin wallet handoff waits on the self-wallet specification.</p>
       <p><input data-address type="text" autocomplete="off" placeholder="paste your BadCoin address for current lookup" aria-label="BadCoin address for current lookup" value="BADCoinT4LZuc2vXoAk8sPhsMRnzeqscPJ"></p>
       <p class="btn-row">
-        <button type="button" disabled aria-disabled="true">BADCOIN WALLET SOON</button>
+        <button type="button" data-wallet-badcoin disabled aria-disabled="true">LOAD BADCOIN WALLET</button>
         <button type="button" disabled aria-disabled="true">DOGECOIN WALLET SOON</button>
         <button type="button" disabled aria-disabled="true">BITCOIN WALLET SOON</button>
       </p>
@@ -786,6 +786,7 @@
     </div>
   </footer>
   <script type="module" src="./compose.mjs"></script>
+  <script type="module" src="./wallet-handoff.mjs"></script>
   <script type="module" src="./explore.mjs"></script>
 </body>
 </html>
