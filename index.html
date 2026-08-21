@@ -223,6 +223,68 @@
       min-height: 4.3rem;
     }
     .props svg { width: 1.35rem; height: 1.35rem; color: var(--orange); flex: none; }
+    .chain-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+      padding: 0 1rem 1.1rem;
+    }
+    @media (min-width: 58rem) {
+      .chain-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    .chain-card {
+      border: 1px solid var(--rules);
+      background: var(--paper);
+      border-radius: 8px;
+      padding: 0.9rem;
+      min-height: 11.5rem;
+      display: grid;
+      gap: 0.55rem;
+      align-content: start;
+      box-shadow: 0 8px 24px #251b0b12;
+    }
+    .chain-card[data-state="live"] {
+      border-top: 5px solid var(--orange);
+    }
+    .chain-card[data-state="soon"] {
+      border-top: 5px solid var(--ink);
+    }
+    .chain-kicker {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--orange);
+    }
+    .chain-card h3 {
+      margin: 0;
+      letter-spacing: 0.08em;
+      font-size: 1rem;
+      text-transform: uppercase;
+    }
+    .chain-card p { margin: 0; }
+    .chain-card .small { opacity: 0.9; }
+    .chain-status {
+      color: var(--ink);
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      padding: 0.12rem 0.45rem;
+      font-size: 0.62rem;
+      white-space: nowrap;
+    }
+    .wallet-actions {
+      display: grid;
+      gap: 0.35rem;
+      margin-top: 0.15rem;
+    }
+    .wallet-actions button {
+      width: 100%;
+      min-height: 2.35rem;
+    }
     ul { padding-left: 1.1rem; }
     a { color: var(--orange); }
     .foot {
@@ -505,7 +567,33 @@
       </div>
     </div>
     <p class="tag">Write it. Render it. <span>Export it.</span></p>
-    <p class="notice">Public static tool. Create, encode, copy, and export CipherGlyphs here. INSCRIBE is coming soon. This page does not request HPP burns, does not connect to the treasury, and cannot spend or broadcast.</p>
+    <p class="notice">Public static tool. Create, encode, copy, and export CipherGlyphs here. BadCoin lookup is live. Dogecoin and Bitcoin compose/export use the same 80-byte GLY1 payload. Chrome wallet handoff is coming soon and this page cannot spend or broadcast.</p>
+    <div class="chain-grid" aria-label="CipherGlyph chains">
+      <article class="chain-card" data-state="live">
+        <div class="chain-kicker"><span>BadCoin</span><span class="chain-status">Lookup live</span></div>
+        <h3>BadGlyph</h3>
+        <p class="small">Create GLY1, export a receipt, and look up the current public BadCoin Glyphs by payload hash160.</p>
+        <div class="wallet-actions">
+          <button type="button" disabled aria-disabled="true">BADCOIN CHROME WALLET SOON</button>
+        </div>
+      </article>
+      <article class="chain-card" data-state="soon">
+        <div class="chain-kicker"><span>Dogecoin</span><span class="chain-status">Self-wallet</span></div>
+        <h3>CipherGlyph on Dogecoin</h3>
+        <p class="small">Compose and export the GLY1 bytes today. Inscription will use the person's own Dogecoin wallet or Chrome wallet plugin.</p>
+        <div class="wallet-actions">
+          <button type="button" disabled aria-disabled="true">DOGECOIN WALLET SOON</button>
+        </div>
+      </article>
+      <article class="chain-card" data-state="soon">
+        <div class="chain-kicker"><span>Bitcoin</span><span class="chain-status">Self-wallet</span></div>
+        <h3>CipherGlyph on Bitcoin</h3>
+        <p class="small">Compose and export the same 80-byte GLY1 payload. Bitcoin inscription waits on a self-wallet flow and fee review.</p>
+        <div class="wallet-actions">
+          <button type="button" disabled aria-disabled="true">BITCOIN WALLET SOON</button>
+        </div>
+      </article>
+    </div>
     </div>
     <section id="create">
       <h2>CREATE A GLYPH</h2>
@@ -536,7 +624,7 @@
             </label>
           </div>
         </div>
-        <p class="small">The page stops at 80 bytes. That is 0 to 46 letters: A-Z, space, comma, period. Same OP_RETURN Bitcoin and Dogecoin already relay. Lowercase is stored as uppercase. Caesar and Vigenere change the drawing, not the bytes.</p>
+        <p class="small">The page stops at 80 bytes. That is 0 to 46 letters: A-Z, space, comma, period. BadCoin, Dogecoin, and Bitcoin use the same GLY1 message budget. Lowercase is stored as uppercase. Caesar and Vigenere change the drawing, not the bytes.</p>
         <p class="small" data-cg-key-hint></p>
         <p class="small">Sheet size is locked for the 80-byte ceiling: the full 46-letter message renders as a compact 10-column sheet.</p>
         <div class="btn-row">
@@ -626,7 +714,7 @@
       <div class="work-chain">
       <details class="panel" open>
         <summary>On-chain GLY1 (encode)</summary>
-        <p class="small">This is the payload that would go in the OP_RETURN: the plain letters, not the Caesar or Vigenere drawing. Public inscription is coming soon, so nothing is sent from this static page.</p>
+        <p class="small">This is the payload that would go in the OP_RETURN: the plain letters, not the Caesar or Vigenere drawing. It is the same GLY1 byte stream for BadCoin, Dogecoin, and Bitcoin. Nothing is sent from this static page.</p>
         <p>Chain message: <strong data-chain-message></strong></p>
         <p><strong>ENCODED PAYLOAD</strong>
            <button type="button" class="secondary" data-copy-hex>COPY HEX</button></p>
@@ -650,12 +738,16 @@
     </section>
     <div class="rule"></div>
     <section id="handoff">
-      <h2>INSCRIBE ON BADCOIN</h2>
-      <p class="lede">Inscribe your Glyph on the BadCoin blockchain with HPP presence credits.</p>
-      <p class="small">Coming soon for visitors. This public static page does not request an HPP burn, does not contact the treasury, and cannot broadcast a transaction.</p>
-      <p>For now, create the Glyph, copy the stream or hex, and export the receipt. Mainnet HPP inscription remains staged behind the operator gate.</p>
-      <p><input data-address type="text" autocomplete="off" placeholder="paste your BadCoin address" aria-label="Your BadCoin address" value="BADCoinT4LZuc2vXoAk8sPhsMRnzeqscPJ"></p>
-      <p><button type="button" disabled aria-disabled="true">INSCRIBE COMING SOON</button></p>
+      <h2>INSCRIBE WITH YOUR WALLET</h2>
+      <p class="lede">BadCoin, Dogecoin, and Bitcoin inscription will use a self-wallet handoff, starting with Chrome plugin wallets.</p>
+      <p class="small">Coming soon. The page will prepare GLY1 bytes for the wallet. The wallet user funds, signs, and broadcasts. This page does not request HPP burns, does not contact the treasury, does not read balances, and cannot spend.</p>
+      <p>For now, create the Glyph, copy the stream or hex, and export the receipt. BadCoin lookup is live below. Dogecoin and Bitcoin wallet handoff waits on the self-wallet specification.</p>
+      <p><input data-address type="text" autocomplete="off" placeholder="paste your BadCoin address for current lookup" aria-label="BadCoin address for current lookup" value="BADCoinT4LZuc2vXoAk8sPhsMRnzeqscPJ"></p>
+      <p class="btn-row">
+        <button type="button" disabled aria-disabled="true">BADCOIN WALLET SOON</button>
+        <button type="button" disabled aria-disabled="true">DOGECOIN WALLET SOON</button>
+        <button type="button" disabled aria-disabled="true">BITCOIN WALLET SOON</button>
+      </p>
       <p class="note" data-handoff-note></p>
       <p><canvas data-handoff-qr hidden></canvas></p>
       <pre data-handoff-url></pre>
@@ -664,9 +756,9 @@
     <div class="rule"></div>
     <section id="explore">
       <h2>EXPLORE</h2>
-      <p class="lede">Rebuilt from the raw chain data, not from our records.</p>
+      <p class="lede">Rebuilt from chain or explorer data, not from a wallet account.</p>
 
-      <h3>GLYPHS FOR AN ADDRESS</h3>
+      <h3>BADCOIN GLYPHS FOR AN ADDRESS</h3>
       <p>
         <input data-lookup-input type="text" inputmode="latin" autocomplete="off"
                placeholder="paste a BadCoin address" aria-label="BadCoin address">
