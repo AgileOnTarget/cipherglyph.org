@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CipherGlyph</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 92'%3E%3Cpolygon points='40,4 74,24 74,68 40,88 6,68 6,24' fill='%23f7f3e8' stroke='%23173f33' stroke-width='3'/%3E%3Cg fill='none' stroke='%23173f33' stroke-width='2.5' stroke-linecap='square'%3E%3Cline x1='40' y1='22' x2='40' y2='70'/%3E%3Cline x1='30' y1='30' x2='50' y2='30'/%3E%3Cline x1='24' y1='44' x2='52' y2='44'/%3E%3Cline x1='32' y1='58' x2='48' y2='58'/%3E%3C/g%3E%3Ccircle cx='58' cy='44' r='3.2' fill='%23e36a1a'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --paper: #f7f3e8;
+      --ground: #efe7d6;
+      --ink: #171714;
+      --orange: #e36a1a;
+      --rules: #c8c1ad;
+      --shadow: 0 18px 48px #251b0b1f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background-color: var(--ground);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E"),
+        repeating-linear-gradient(145deg, #00000008 0 1px, transparent 1px 18px);
+      font-family: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", ui-sans-serif, system-ui, sans-serif;
+      padding: 1.5rem 1.5rem 4rem;
+    }
+    main { max-width: 76rem; margin: 0 auto; }
+    .masthead { background: #fffaf0; border: 1px solid #d8cdb7; border-radius: 8px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 1.4rem; }
+    .mast-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 0.8rem 1rem; border-bottom: 1px solid var(--rules); }
+    .lockup { display: flex; align-items: center; gap: 0.85rem; }
+    .mark { width: 3.4rem; height: auto; color: var(--ink); flex: none; }
+    .brand-coin {
+      width: 2.55rem;
+      height: 2.55rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--orange);
+      color: #fffaf0;
+      border: 3px double #fffaf0;
+      box-shadow: 0 0 0 2px var(--orange);
+      font-family: ui-monospace, monospace;
+      font-weight: 900;
+      font-size: 1.25rem;
+      letter-spacing: 0;
+    }
+    .chain { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.65; }
+    .chain-standard { font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; margin-top: -0.2rem; }
+    h1 { font-size: clamp(1.45rem, 3vw, 2.05rem); letter-spacing: 0.06em; margin: 0.05rem 0 0.1rem; font-weight: 800; line-height: 0.95; }
+    h1 span { color: var(--orange); }
+    .tag { letter-spacing: 0.14em; text-transform: uppercase; font-size: clamp(0.85rem, 2.2vw, 1.25rem); margin: 0.85rem 1rem 1rem; text-align: center; font-weight: 800; }
+    .tag span { color: var(--orange); }
+    .mast-nav { display: flex; gap: 1rem; align-items: center; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; }
+    .mast-nav a { text-decoration: none; color: inherit; }
+    .gly1 { display: inline-block; border: 2px solid var(--orange); color: var(--orange); font-weight: 800; letter-spacing: 0.14em; padding: 0.2rem 0.5rem; font-size: 0.72rem; border-radius: 7px; background: #fffaf0; }
+    .notice { border: 1px solid #d8cdb7; border-left: 5px solid var(--orange); padding: 0.85rem 1rem; margin: 0 1rem 1.1rem; font-size: 0.95rem; background: #fffaf0; box-shadow: inset 0 0 0 1px #ffffff80; }
+    .rule { height: 1px; background: var(--rules); margin: 1.1rem 0 1.3rem; }
+    h2 { letter-spacing: 0.08em; font-size: 1.05rem; margin: 0 0 0.6rem; }
+    p, li { line-height: 1.45; }
+    .lede { max-width: 46rem; }
+    .axes { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.75rem; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+    .axes li { background: #fffaf0; border: 1px solid var(--rules); padding: 0.85rem 1rem; border-radius: 8px; box-shadow: 0 8px 24px #251b0b12; }
+    .axes strong { display: block; letter-spacing: 0.08em; font-size: 0.78rem; margin-bottom: 0.35rem; }
+    .workbench { display: grid; grid-template-columns: minmax(16rem, 20rem) 1fr; gap: 1rem; align-items: start; }
+    @media (max-width: 52rem) { .workbench { grid-template-columns: 1fr; } }
+    .panel { background: var(--paper); border: 1px solid var(--rules); padding: 0.85rem 1rem 1rem; margin: 0 0 0.75rem; border-radius: 8px; box-shadow: 0 8px 24px #251b0b12; }
+    .panel summary { font-weight: 800; letter-spacing: 0.08em; cursor: pointer; }
+    label { display: block; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 0.6rem 0 0.25rem; }
+    textarea, input, select { width: 100%; font: inherit; color: inherit; background: #fffdf6; border: 1px solid var(--rules); padding: 0.4rem 0.5rem; border-radius: 6px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.7rem 0; }
+    button { font: inherit; font-weight: 800; letter-spacing: 0.08em; background: var(--ink); color: var(--paper); border: 0; padding: 0.45rem 0.8rem; cursor: pointer; }
+    button.secondary { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+    .small { font-size: 0.88rem; opacity: 0.9; }
+    .codepane { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.82rem; background: #fffdf6; border: 1px solid var(--rules); padding: 0.55rem 0.65rem; min-height: 2.2rem; word-break: break-word; border-radius: 6px; }
+    [data-teach-stage] img { display: block; width: 100%; height: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { text-align: left; border-bottom: 1px solid var(--rules); padding: 0.28rem 0.35rem; }
+    .keyboard { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .keyboard button { min-width: 2rem; padding: 0.3rem 0.45rem; }
+    .foot { margin-top: 2rem; font-size: 0.72rem; letter-spacing: 0.12em; }
+    a { color: inherit; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="masthead">
+    <div class="mast-top">
+      <div class="lockup">
+        <span class="brand-coin" aria-hidden="true">B</span>
+        <div>
+          <div class="chain">BadCoin</div>
+          <div class="chain-standard">The human standard</div>
+          <h1>CIPHER<span>GLYPH</span></h1>
+        </div>
+      </div>
+      <div class="mast-nav">
+        <span class="gly1">GLY1</span>
+        <a href="index.html#handoff">INSCRIBE SOON</a>
+        <a href="cipherglyph.html">LEARN</a>
+      </div>
+    </div>
+    <p class="tag">A writing system you can teach, then <span>verify.</span></p>
+    <p class="notice">Public teaching page. This page does not inscribe, does not talk to a chain, and does not collect a wallet. It is the CipherGlyph classroom.</p>
+    </div>
+
+    <h2>WHAT THIS IS</h2>
+    <p class="lede">CipherGlyph is a geometric alphabet by Tom Friend. Each letter is one Glyph. BadGlyph stores the letters on BadCoin. This page teaches the writing system. It does not inscribe them.</p>
+    <ul class="axes">
+      <li><strong>1. BASE SHAPE</strong> Which group of letters. Nine shapes.</li>
+      <li><strong>2. TICK COUNT</strong> Position inside the group. One, two, or three ticks.</li>
+      <li><strong>3. DOT SIDE</strong> Right for a vowel, left for a consonant. Redundant on purpose so a mis-copied Glyph shows itself.</li>
+    </ul>
+    <p class="lede">Nine shapes, three tick counts, two sides. Fifty-four slots for twenty-six letters. Type a sentence. The page draws Glyphs. The Glyphs decode back to the sentence.</p>
+    <p class="lede"><strong>This is a teaching cipher, not a lock.</strong> Plain, Caesar, and Vigenere are classical classroom ciphers. Vigenere was broken by Kasiski in 1863. CipherGlyph is not a security system.</p>
+    <p class="lede">To prepare a message for BadCoin, use the <a href="index.html">BadGlyph page</a>. Public HPP inscription is coming soon. A real inscription needs a real txid.</p>
+
+    <div class="rule"></div>
+    <h2>SIMULATOR</h2>
+    <div class="workbench">
+      <div>
+        <details class="panel" open>
+          <summary>Compose</summary>
+          <label for="teach-message">Message</label>
+          <textarea id="teach-message" data-teach-plain rows="4" spellcheck="false" maxlength="46" aria-label="Teaching message">HELLO WORLD</textarea>
+          <div class="row">
+            <div>
+              <label>Mode
+                <select data-teach-mode aria-label="Teaching mode">
+                  <option value="plain" selected>Plain</option>
+                  <option value="caesar">Caesar</option>
+                  <option value="vigenere">Vigenere</option>
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>Key
+                <input data-teach-key type="text" value="7" autocomplete="off" aria-label="Teaching key">
+              </label>
+            </div>
+          </div>
+          <p class="small" data-teach-key-hint></p>
+          <div class="row">
+            <div>
+              <label>Columns
+                <input data-teach-cols type="number" value="14" min="4" max="60" aria-label="Columns">
+              </label>
+            </div>
+            <div>
+              <label>Cell px
+                <input data-teach-cell type="number" value="40" min="22" max="80" aria-label="Cell size">
+              </label>
+            </div>
+          </div>
+          <p class="btn-row">
+            <button type="button" data-teach-render>Render</button>
+            <button type="button" class="secondary" data-teach-sample>Sample</button>
+          </p>
+        </details>
+        <details class="panel">
+          <summary>Glyph keyboard</summary>
+          <p class="small">Each tap appends a letter.</p>
+          <div class="keyboard" data-teach-kbd></div>
+        </details>
+        <details class="panel">
+          <summary>Letter groups</summary>
+          <table data-teach-groups></table>
+        </details>
+      </div>
+      <div>
+        <details class="panel" open>
+          <summary>Glyph sheet</summary>
+          <p class="btn-row"><button type="button" class="secondary" data-teach-copy>COPY STREAM</button></p>
+          <div data-teach-stage></div>
+          <label>Encoded letters</label>
+          <div class="codepane" data-teach-letters></div>
+          <label>Symbol stream</label>
+          <div class="codepane" data-teach-stream></div>
+        </details>
+        <details class="panel">
+          <summary>Alphabet key</summary>
+          <table data-teach-keytable></table>
+        </details>
+        <details class="panel">
+          <summary>Decode a symbol stream</summary>
+          <p class="small">Code grammar: SHAPE + TICKS + DOT (for example COR2L). SPACE for space, DOT3 for period, DOT2 for comma. Teaching cipher, not a lock.</p>
+          <textarea data-teach-decode rows="3" spellcheck="false" placeholder="COR2L TRI2R ZIG3L ZIG3L VER3R" aria-label="Symbol stream"></textarea>
+          <p class="btn-row"><button type="button" class="secondary" data-teach-decode-go>DECODE STREAM</button></p>
+          <p>Recovered: <strong data-teach-recovered></strong></p>
+        </details>
+      </div>
+    </div>
+    <p class="foot">GLY1 · CHAIN: BADCOIN · TYPE: TEACHING PAGE · LOCAL ONLY</p>
+  </main>
+  <script type="module" src="./cipherglyph-view.mjs"></script>
+</body>
+</html>
