@@ -342,7 +342,7 @@ function receiptFacts() {
   const number = (handoff?.dataset.number ?? "").trim();
   const verified = handoff?.dataset.verified === "yes" || Boolean(known?.txid);
   return {
-    address: address || known?.address || "none",
+    address: known?.address || address || "none",
     txid: txid || "none",
     block: block || "none",
     number: number || "pending",
