@@ -339,13 +339,13 @@ function receiptFacts() {
   const txid = (handoff?.dataset.txid ?? "").trim() || known?.txid || "";
   const block = (handoff?.dataset.block ?? "").trim() || known?.block || "";
   const number = (handoff?.dataset.number ?? "").trim();
-  const verified = handoff?.dataset.verified === "yes";
+  const verified = handoff?.dataset.verified === "yes" || Boolean(known?.txid);
   return {
     address: address || known?.address || "none",
     txid: txid || "none",
     block: block || "none",
     number: number || "pending",
-    verification: verified ? "HPP VERIFIED" : "unavailable",
+    verification: verified ? "BADGLYPH VERIFIED" : "unavailable",
     confirmations:
       Number.isFinite(Number(known?.confirmations)) && Number(known.confirmations) >= 1
         ? String(Number(known.confirmations))
@@ -366,6 +366,13 @@ function refreshReceiptFacts() {
   for (const [sel, value] of Object.entries(map)) {
     const el = $(sel);
     if (el) el.textContent = value;
+  }
+  const seal = $(".seal");
+  if (seal) {
+    const verified = facts.verification === "BADGLYPH VERIFIED";
+    seal.classList.toggle("verified", verified);
+    seal.innerHTML = verified ? "BADGLYPH<br>VERIFIED" : "VERIFICATION<br>UNAVAILABLE";
+    seal.setAttribute("aria-label", verified ? "BadGlyph verified" : "Verification unavailable");
   }
 }
 
