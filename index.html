@@ -405,7 +405,17 @@
       padding: 0.75rem 0.9rem;
       margin: 0.7rem 0;
     }
-    .lookup-badge { font-weight: 800; letter-spacing: 0.08em; font-size: 0.75rem; }
+    .lookup-badge {
+      display: inline-block;
+      margin: 0;
+      border: 2px solid currentColor;
+      border-radius: 6px;
+      padding: 0.2rem 0.45rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      font-size: 0.75rem;
+    }
+    .lookup-badge[data-verified="yes"] { color: var(--ok); }
     #explore .note[data-tone="ok"] { color: var(--ok); }
     #explore .badge { display: inline-block; border: 2px solid currentColor; padding: 0.2rem 0.6rem; font-weight: 800; font-size: 0.8rem; letter-spacing: 0.06em; }
     #explore .badge[data-verified="yes"] { color: var(--ok); }

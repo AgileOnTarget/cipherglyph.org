@@ -28,7 +28,8 @@ function renderItems(root, items) {
     card.className = "lookup-card";
     const badge = document.createElement("p");
     badge.className = "lookup-badge";
-    badge.textContent = item.badge || "";
+    badge.textContent = lookupBadge(item);
+    if (badge.textContent === "BADGLYPH VERIFIED") badge.dataset.verified = "yes";
     const msg = document.createElement("p");
     msg.textContent = item.message || "(unreadable payload)";
     const meta = document.createElement("p");
@@ -46,6 +47,19 @@ function renderItems(root, items) {
     card.append(badge, msg, stage, meta);
     box.append(card);
   }
+}
+
+function lookupBadge(item) {
+  if (!item) return "";
+  if (
+    item.source === "snapshot" ||
+    item.source === "live_explorer" ||
+    item.source === "badcoin_glyph_snapshot"
+  ) {
+    return "BADGLYPH VERIFIED";
+  }
+  if (item.txid && item.payloadHex && item.readable) return "BADGLYPH VERIFIED";
+  return item.badge || "";
 }
 
 function wireAddressLookup(root) {
