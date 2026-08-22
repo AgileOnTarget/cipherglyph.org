@@ -743,9 +743,20 @@
       { url: "http://127.0.0.1:8766/treasury/balance", label: "operator treasury" },
       { url: `https://explorer.badcoin.dev/ext/getbalance/${TREASURY_ADDRESS}`, label: "explorer" },
     ];
+    const ADDRESS_BALANCE_SOURCES = [
+      (address) => ({
+        url: `http://127.0.0.1:8766/address/balance/${encodeURIComponent(address)}`,
+        label: "operator lookup",
+      }),
+      (address) => ({
+        url: `https://explorer.badcoin.dev/ext/getbalance/${encodeURIComponent(address)}`,
+        label: "explorer",
+      }),
+    ];
 
     const balance = document.querySelector("[data-balance]");
     const addressInput = document.getElementById("badcoin-address");
+    const refreshBalanceBtn = document.querySelector("[data-refresh-balance]");
     const treasuryAvailable = document.querySelector("[data-treasury-available]");
     const treasuryGauge = document.querySelector("[data-treasury-gauge]");
     const treasuryStatus = document.querySelector("[data-treasury-status]");
@@ -768,8 +779,8 @@
     renderTreasuryGauge(0, TREASURY_MAX_BAD);
     refreshTreasuryGauge();
 
-    document.querySelector("[data-refresh-balance]")?.addEventListener("click", () => {
-      balance.textContent = "BadCoin address balance lookup is next";
+    refreshBalanceBtn?.addEventListener("click", async () => {
+      await refreshAddressBalance();
       refreshTreasuryGauge({ preferLive: true });
     });
     refreshTreasuryBtn?.addEventListener("click", () => refreshTreasuryGauge({ preferLive: true }));
@@ -948,6 +959,7 @@
         verifyBurnBtn.disabled = true;
         setFaucetStatus(`Paid 10 BAD. Txid ${verified.txid || claim.txid}.`, "ok");
         refreshTreasuryGauge({ preferLive: true });
+        refreshAddressBalance();
         return;
       }
       if (status === "paying") {
@@ -1009,6 +1021,78 @@
         }
       }
       return { ok: false };
+    }
+
+    async function refreshAddressBalance() {
+      const address = addressInput.value.trim();
+      if (!address) {
+        balance.textContent = "enter address";
+        setFaucetStatus("Enter a BadCoin public address first.", "warn");
+        return;
+      }
+      if (refreshBalanceBtn) refreshBalanceBtn.disabled = true;
+      balance.textContent = "checking";
+      const found = await readAddressBalance(address);
+      if (refreshBalanceBtn) refreshBalanceBtn.disabled = false;
+      if (!found.ok) {
+        balance.textContent = "unavailable";
+        setFaucetStatus(found.message || "Cannot read the BadCoin address balance right now.", "warn");
+        return;
+      }
+      balance.textContent = `${formatBad(found.balanceBad)} BAD`;
+      const source = found.label ? ` from ${found.label}` : "";
+      setFaucetStatus(`Balance refreshed${source}.`, "ok");
+    }
+
+    async function readAddressBalance(address) {
+      for (const makeSource of ADDRESS_BALANCE_SOURCES) {
+        const source = makeSource(address);
+        try {
+          const res = await fetch(source.url, {
+            method: "GET",
+            cache: "no-store",
+            headers: { Accept: "application/json, text/plain" },
+          });
+          if (!res.ok) continue;
+          const text = await res.text();
+          const parsed = parseAddressBalance(text, source.label);
+          if (parsed.ok) return parsed;
+        } catch {
+          continue;
+        }
+      }
+      return {
+        ok: false,
+        message: "Cannot read the BadCoin address balance right now.",
+      };
+    }
+
+    function parseAddressBalance(text, label) {
+      const trimmed = String(text || "").trim();
+      const asNumber = Number(trimmed);
+      if (Number.isFinite(asNumber) && asNumber >= 0) {
+        return { ok: true, label, balanceBad: asNumber };
+      }
+      try {
+        const json = JSON.parse(trimmed);
+        if (json.error === "address not found.") {
+          return { ok: true, label, balanceBad: 0 };
+        }
+        const balanceBad = Number(json.balanceBad ?? json.balance ?? json.result);
+        if (Number.isFinite(balanceBad) && balanceBad >= 0) {
+          return { ok: true, label: json.source || label, balanceBad };
+        }
+      } catch {
+        return { ok: false };
+      }
+      return { ok: false };
+    }
+
+    function formatBad(value) {
+      return Number(value || 0).toLocaleString("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 8,
+      });
     }
 
     function parseTreasuryBalance(text, label) {
