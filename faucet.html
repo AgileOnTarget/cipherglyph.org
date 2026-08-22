@@ -213,6 +213,12 @@
       color: #6d7f75;
       text-align: center;
     }
+    .treasury-refresh {
+      min-height: 1.7rem;
+      padding: 0.2rem 0.45rem;
+      font-size: 0.62rem;
+      border-width: 1px;
+    }
     .hero-body {
       display: grid;
       grid-template-columns: 1fr;
@@ -599,6 +605,7 @@
           </div>
           <p class="treasury-caption">BadCoin available</p>
           <p class="treasury-status" data-treasury-status>checking treasury</p>
+          <button type="button" class="secondary treasury-refresh" data-refresh-treasury>Refresh BadCoin</button>
         </aside>
       </div>
       <div class="hero-body">
@@ -731,8 +738,8 @@
 
     const TREASURY_MAX_BAD = 1000;
     const TREASURY_ADDRESS = "BADDoGmLTiLyv1wZjVqjzcYKz6WKkNYUZ8";
-    const TREASURY_SOURCES = [
-      { url: "./data/badcoin-treasury.json", label: "chain snapshot" },
+    const TREASURY_SNAPSHOT_SOURCE = { url: "./data/badcoin-treasury.json", label: "chain snapshot" };
+    const TREASURY_LIVE_SOURCES = [
       { url: "http://127.0.0.1:8766/treasury/balance", label: "operator treasury" },
       { url: `https://explorer.badcoin.dev/ext/getbalance/${TREASURY_ADDRESS}`, label: "explorer" },
     ];
@@ -742,6 +749,7 @@
     const treasuryAvailable = document.querySelector("[data-treasury-available]");
     const treasuryGauge = document.querySelector("[data-treasury-gauge]");
     const treasuryStatus = document.querySelector("[data-treasury-status]");
+    const refreshTreasuryBtn = document.querySelector("[data-refresh-treasury]");
     const walletOutput = document.querySelector("[data-wallet-output]");
     const walletStatus = document.querySelector("[data-wallet-status]");
     const faucetStatus = document.querySelector("[data-faucet-status]");
@@ -762,8 +770,9 @@
 
     document.querySelector("[data-refresh-balance]")?.addEventListener("click", () => {
       balance.textContent = "BadCoin address balance lookup is next";
-      refreshTreasuryGauge();
+      refreshTreasuryGauge({ preferLive: true });
     });
+    refreshTreasuryBtn?.addEventListener("click", () => refreshTreasuryGauge({ preferLive: true }));
     document.querySelector("[data-reset-flow]")?.addEventListener("click", () => {
       stopPoll();
       currentBurnId = "";
@@ -938,7 +947,7 @@
         stopPoll();
         verifyBurnBtn.disabled = true;
         setFaucetStatus(`Paid 10 BAD. Txid ${verified.txid || claim.txid}.`, "ok");
-        refreshTreasuryGauge();
+        refreshTreasuryGauge({ preferLive: true });
         return;
       }
       if (status === "paying") {
@@ -964,9 +973,11 @@
       pollTimer = null;
     }
 
-    async function refreshTreasuryGauge() {
+    async function refreshTreasuryGauge({ preferLive = false } = {}) {
+      if (refreshTreasuryBtn) refreshTreasuryBtn.disabled = true;
       treasuryStatus.textContent = "checking treasury";
-      const found = await readTreasuryBalance();
+      const found = await readTreasuryBalance({ preferLive });
+      if (refreshTreasuryBtn) refreshTreasuryBtn.disabled = false;
       if (!found.ok) {
         treasuryStatus.textContent = "treasury unavailable";
         return;
@@ -978,8 +989,11 @@
         : found.label;
     }
 
-    async function readTreasuryBalance() {
-      for (const source of TREASURY_SOURCES) {
+    async function readTreasuryBalance({ preferLive = false } = {}) {
+      const sources = preferLive
+        ? [...TREASURY_LIVE_SOURCES, TREASURY_SNAPSHOT_SOURCE]
+        : [TREASURY_SNAPSHOT_SOURCE, ...TREASURY_LIVE_SOURCES];
+      for (const source of sources) {
         try {
           const res = await fetch(source.url, {
             method: "GET",
