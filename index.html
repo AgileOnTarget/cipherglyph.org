@@ -223,67 +223,49 @@
       min-height: 4.3rem;
     }
     .props svg { width: 1.35rem; height: 1.35rem; color: var(--orange); flex: none; }
-    .chain-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.8rem;
-      padding: 0 1rem 1.1rem;
-    }
-    @media (min-width: 58rem) {
-      .chain-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    .chain-card {
-      border: 1px solid var(--rules);
-      background: var(--paper);
-      border-radius: 8px;
-      padding: 0.9rem;
-      min-height: 11.5rem;
-      display: grid;
-      gap: 0.55rem;
-      align-content: start;
-      box-shadow: 0 8px 24px #251b0b12;
-    }
-    .chain-card[data-state="live"] {
-      border-top: 5px solid var(--orange);
-    }
-    .chain-card[data-state="soon"] {
-      border-top: 5px solid var(--ink);
-    }
-    .chain-kicker {
+    .chain-strip {
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 0 1rem 1rem;
+    }
+    .chain-pill {
+      display: inline-flex;
       align-items: center;
-      gap: 0.6rem;
+      justify-content: space-between;
+      gap: 0.75rem;
+      min-height: 2.45rem;
+      border: 1px solid var(--rules);
+      border-left: 5px solid var(--ink);
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--ink);
+      padding: 0.45rem 0.65rem;
+      text-decoration: none;
+      box-shadow: 0 8px 24px #251b0b12;
+      flex: 1 1 13rem;
+    }
+    .chain-pill[data-state="live"] {
+      border-left-color: var(--orange);
+    }
+    .chain-pill span {
       font-size: 0.68rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       font-weight: 800;
       color: var(--orange);
     }
-    .chain-card h3 {
-      margin: 0;
+    .chain-pill strong {
+      font-size: 0.7rem;
       letter-spacing: 0.08em;
-      font-size: 1rem;
       text-transform: uppercase;
+      text-align: right;
     }
-    .chain-card p { margin: 0; }
-    .chain-card .small { opacity: 0.9; }
-    .chain-status {
+    .chain-pill[data-state="soon"] strong {
       color: var(--ink);
-      border: 1px solid currentColor;
-      border-radius: 999px;
-      padding: 0.12rem 0.45rem;
-      font-size: 0.62rem;
-      white-space: nowrap;
     }
-    .wallet-actions {
-      display: grid;
-      gap: 0.35rem;
-      margin-top: 0.15rem;
-    }
-    .wallet-actions button {
-      width: 100%;
-      min-height: 2.35rem;
+    .chain-pill:hover {
+      border-color: var(--orange);
     }
     ul { padding-left: 1.1rem; }
     a { color: var(--orange); }
@@ -572,31 +554,10 @@
     </div>
     <p class="tag"><span>BadGlyph is onchain graffiti.</span></p>
     <p class="notice">Write a small human mark. Anchor it forever. BadCoin first. Dogecoin and Bitcoin next. Public static tool: create, encode, copy, export, and hand the GLY1 payload to the BadCoin Chrome wallet. BadCoin lookup is live. Dogecoin and Bitcoin compose/export use the same 80-byte GLY1 payload. This page cannot spend or broadcast.</p>
-    <div class="chain-grid" aria-label="CipherGlyph chains">
-      <article class="chain-card" data-state="live">
-        <div class="chain-kicker"><span>BadCoin</span><span class="chain-status">Lookup live</span></div>
-        <h3>BadGlyph</h3>
-        <p class="small">Create GLY1, export a receipt, and look up the current public BadCoin Glyphs by payload hash160.</p>
-        <div class="wallet-actions">
-          <button type="button" data-wallet-badcoin disabled aria-disabled="true">CONNECT BADCOIN WALLET</button>
-        </div>
-      </article>
-      <article class="chain-card" data-state="soon">
-        <div class="chain-kicker"><span>Dogecoin</span><span class="chain-status">Self-wallet</span></div>
-        <h3>CipherGlyph on Dogecoin</h3>
-        <p class="small">Compose and export the GLY1 bytes today. Inscription will use the person's own Dogecoin wallet or Chrome wallet plugin.</p>
-        <div class="wallet-actions">
-          <button type="button" disabled aria-disabled="true">DOGECOIN WALLET SOON</button>
-        </div>
-      </article>
-      <article class="chain-card" data-state="soon">
-        <div class="chain-kicker"><span>Bitcoin</span><span class="chain-status">Self-wallet</span></div>
-        <h3>CipherGlyph on Bitcoin</h3>
-        <p class="small">Compose and export the same 80-byte GLY1 payload. Bitcoin inscription waits on a self-wallet flow and fee review.</p>
-        <div class="wallet-actions">
-          <button type="button" disabled aria-disabled="true">BITCOIN WALLET SOON</button>
-        </div>
-      </article>
+    <div class="chain-strip" aria-label="CipherGlyph chain status">
+      <a class="chain-pill" data-state="live" href="#create"><span>BadCoin</span><strong>Create and lookup live</strong></a>
+      <a class="chain-pill" data-state="soon" href="#handoff"><span>Dogecoin</span><strong>Wallet handoff next</strong></a>
+      <a class="chain-pill" data-state="soon" href="#handoff"><span>Bitcoin</span><strong>Fee review next</strong></a>
     </div>
     </div>
     <section id="create">
