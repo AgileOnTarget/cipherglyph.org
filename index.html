@@ -536,7 +536,7 @@
         <a href="cipherglyph.html">LEARN</a>
         <a href="privacy.html">PRIVACY</a>
         <a href="support.html">SUPPORT</a>
-        <a href="index.html#handoff">INSCRIBE SOON</a>
+        <a href="index.html#handoff">INSCRIBE</a>
       </div>
     </div>
   </nav>
@@ -553,7 +553,7 @@
       </div>
     </div>
     <p class="tag"><span>BadGlyph is onchain graffiti.</span></p>
-    <p class="notice">Write a small human mark. Anchor it forever. BadCoin first. Dogecoin and Bitcoin next. Public static tool: create, encode, copy, export, and hand the GLY1 payload to the BadCoin Chrome wallet. BadCoin lookup is live. Dogecoin and Bitcoin compose/export use the same 80-byte GLY1 payload. This page cannot spend or broadcast.</p>
+    <p class="notice">Write a small human mark. Anchor it forever. BadCoin first. Dogecoin and Bitcoin next. Create, encode, copy, export, and prepare a BadCoin inscription with the Chrome wallet. BadCoin lookup is live. Dogecoin and Bitcoin use the same 80-byte GLY1 payload.</p>
     <div class="chain-strip" aria-label="CipherGlyph chain status">
       <a class="chain-pill" data-state="live" href="#create"><span>BadCoin</span><strong>Create and lookup live</strong></a>
       <a class="chain-pill" data-state="soon" href="#handoff"><span>Dogecoin</span><strong>Wallet handoff next</strong></a>
@@ -703,14 +703,12 @@
     <div class="rule"></div>
     <section id="handoff">
       <h2>INSCRIBE WITH YOUR WALLET</h2>
-      <p class="lede">BadCoin, Dogecoin, and Bitcoin inscription will use a self-wallet handoff, starting with Chrome plugin wallets.</p>
-      <p class="small">BadCoin Chrome wallet prepare is active when the extension is loaded. The wallet user funds, signs, and broadcasts. This page does not request HPP burns, does not contact the treasury, does not read balances, and cannot spend.</p>
-      <p>Create the Glyph, then prepare the BadCoin inscription through the Chrome wallet. BadCoin lookup is live below. Dogecoin and Bitcoin wallet handoff waits on the self-wallet specification.</p>
+      <p class="lede">BadCoin wallet handoff is active when the Chrome extension is loaded. Create the Glyph, choose the BadCoin address, then open the wallet to fund, sign, and broadcast.</p>
+      <p class="small">This page builds the GLY1 payload and sends it to the wallet. The wallet owns the transaction flow. No treasury, no site-side signing, no balance reads from this page.</p>
+      <p class="small">Dogecoin and Bitcoin use the same 80-byte GLY1 payload. Their wallet handoffs come after the BadCoin path is stable.</p>
       <p><input data-address type="text" autocomplete="off" placeholder="paste your BadCoin address for current lookup" aria-label="BadCoin address for current lookup" value="BADCoinT4LZuc2vXoAk8sPhsMRnzeqscPJ"></p>
       <p class="btn-row">
         <button type="button" data-wallet-badcoin disabled aria-disabled="true">CONNECT BADCOIN WALLET</button>
-        <button type="button" disabled aria-disabled="true">DOGECOIN WALLET SOON</button>
-        <button type="button" disabled aria-disabled="true">BITCOIN WALLET SOON</button>
       </p>
       <p class="note" data-handoff-note></p>
       <p><canvas data-handoff-qr hidden></canvas></p>
