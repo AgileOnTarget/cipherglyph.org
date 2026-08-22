@@ -38,9 +38,9 @@ function renderItems(root, items) {
     if (item.height != null) bits.push(`block ${item.height}`);
     meta.textContent = bits.join(" · ");
     const stage = document.createElement("div");
-    stage.className = "stage-wrap";
+    stage.className = "stage-wrap lookup-stage";
     if (item.readable && item.message) {
-      const sheet = buildSheetSvg(item.message, { cols: 10, cell: 24 });
+      const sheet = buildSheetSvg(item.message, { cols: 23, minRows: 2, fixedCols: true, cell: 64 });
       paintSheet(stage, sheet);
     }
     card.append(badge, msg, stage, meta);
