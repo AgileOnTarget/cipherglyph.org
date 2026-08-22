@@ -8,7 +8,7 @@
  */
 import { validateAddress } from "./lib/address.mjs";
 import { buildAddressView, LOOKUP } from "./lib/explore-model.mjs";
-import { lookupBadcoinAddress } from "./lib/badcoin-explorer-client.mjs";
+import { lookupBadcoinAddress, lookupBadcoinSnapshot } from "./lib/badcoin-explorer-client.mjs";
 import { buildSheetSvg, paintSheet } from "./lib/cipherglyph-svg.mjs";
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -108,12 +108,20 @@ function wireAddressLookup(root) {
     }
     setNote(note, "Looking up public BadCoin Glyphs.", "");
     const address = input.value.trim();
-    let res = await lookupViaBadcoinExtension(address);
+    let res;
+    try {
+      res = await lookupViaBadcoinExtension(address);
+    } catch {
+      res = null;
+    }
     if (res === null) {
       res = await lookupBadcoinAddress({
         address,
         addressCheck,
       });
+    }
+    if (res?.reachable === false) {
+      res = lookupBadcoinSnapshot({ addressCheck });
     }
     const reachable = res.reachable !== false;
     const view = buildAddressView({
@@ -140,6 +148,19 @@ function wireAddressLookup(root) {
 
   btn.addEventListener("click", () => {
     run().catch(() => {
+      const addressCheck = validateAddress(input.value, "mainnet");
+      if (addressCheck.ok) {
+        const fallback = lookupBadcoinSnapshot({ addressCheck });
+        const view = buildAddressView({
+          reachable: true,
+          items: fallback.items || [],
+          addressCheck,
+        });
+        const suffix = ` Loaded from the public chain snapshot generated ${fallback.snapshotGeneratedAt}.`;
+        setNote(note, (view.message ?? `Found ${view.items.length}.`) + suffix, "ok");
+        renderItems(root, view.items);
+        return;
+      }
       setNote(note, "Cannot reach the index right now. This does not mean there are none.", "warn");
       renderItems(root, []);
     });
