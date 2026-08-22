@@ -283,6 +283,14 @@
       margin: 0.9rem 0 0;
       font-size: 0.95rem;
     }
+    .status-note[data-tone="ok"] {
+      border-left-color: var(--ok);
+      color: var(--ok);
+    }
+    .status-note[data-tone="warn"] {
+      border-left-color: #a02714;
+      color: #a02714;
+    }
     label {
       display: block;
       font-weight: 800;
@@ -384,6 +392,17 @@
         linear-gradient(#d8d1bb55 1px, transparent 1px),
         linear-gradient(90deg, #d8d1bb55 1px, transparent 1px);
       background-size: 16px 16px;
+    }
+    .qr-frame canvas {
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+      background: #fff;
+    }
+    .qr-frame[data-ready="true"] {
+      background: #fff;
+      padding: 0.35rem;
+      color: var(--ink);
     }
     .qr-caption {
       display: block;
@@ -596,7 +615,7 @@
           <p class="gate-label">Human Presence Protocol gate</p>
           <h2 class="gate-title">One human moment. Ten BAD.</h2>
           <p class="lead">The faucet is a proof-of-concept rate limiter. HPP proves that a real person was present for the request. BadCoin is released only after the Presence Credit burn succeeds.</p>
-          <p class="status-note"><strong>POC status.</strong> This page is the public faucet surface. HPP verification and treasury deposit wiring are next. It does not send BAD yet.</p>
+          <p class="status-note"><strong>Live faucet path.</strong> The page asks the treasury service to prepare an HPP burn. After HPP verifies the burn, the treasury sends 10 BAD to the address you entered.</p>
           <a href="https://apps.apple.com/app/human-presence-protocol-hpp/id6762528053" class="app-store-badge" target="_blank" rel="noopener noreferrer" aria-label="Download Human Presence Protocol on the App Store">
             <svg width="22" height="26" viewBox="0 0 22 26" aria-hidden="true"><path fill="#fff" d="M17.9 13.8c0-3 2.4-4.5 2.5-4.6-1.4-2.1-3.6-2.4-4.4-2.4-1.9-.2-3.7 1.1-4.6 1.1-.9 0-2.4-1.1-4-1-2 0-3.9 1.2-5 3-2.1 3.6-.5 9 1.5 12 1 1.5 2.2 3.1 3.8 3 1.5-.1 2.1-1 4-1s2.4 1 4 1c1.6 0 2.7-1.5 3.7-2.9 1.1-1.7 1.6-3.3 1.6-3.4-.1-.1-3.1-1.3-3.1-4.8ZM14.8 4.8c.8-1 1.4-2.4 1.2-3.8-1.2.1-2.7.8-3.6 1.8-.8.9-1.5 2.3-1.3 3.7 1.4.1 2.8-.7 3.7-1.7Z"/></svg>
             <span class="asb-text"><span class="asb-small">Download on the</span><span class="asb-large">App Store</span></span>
@@ -606,19 +625,22 @@
         <article class="faucet-card">
           <label for="badcoin-address">BadCoin public address</label>
           <input id="badcoin-address" type="text" inputmode="latin" autocomplete="off" placeholder="BADCoinT4LZuc2vXoAk8sPhsMRnzeqscPJ">
+          <p class="status-note" data-faucet-status>Enter a BadCoin address, then request 10 BAD.</p>
           <div class="balance-line">
             <span>Balance: <strong data-balance>not checked</strong></span>
             <button type="button" class="secondary" data-refresh-balance>Refresh balance</button>
           </div>
           <div class="button-row">
-            <button type="button" data-request-faucet disabled>Request 10 BAD</button>
+            <button type="button" data-request-faucet>Request 10 BAD</button>
+            <button type="button" class="secondary" data-verify-burn disabled>Verify burn</button>
             <button type="button" class="secondary" data-reset-flow>Reset</button>
           </div>
           <div class="qr-row">
-            <div class="qr-frame" aria-label="HPP faucet QR placeholder">HPP QR<br>pending</div>
+            <div class="qr-frame" aria-label="HPP faucet QR" data-faucet-qr>HPP QR<br>pending</div>
             <div>
               <span class="qr-caption">Scan with HPP iPhone app</span>
               <p class="lead">After the request is prepared, scan this QR code, complete biometric attestation, and burn 1 Presence Credit.</p>
+              <p class="wallet-status" data-burn-id></p>
             </div>
           </div>
         </article>
@@ -704,6 +726,8 @@
   </footer>
   <script type="module">
     import { drawColdWalletPng, generateBadCoinColdWallet } from "./lib/badcoin-cold-wallet.mjs";
+    import { prepareClaimRequest, verifyClaimRequest, getClaimRequest, prepareFailureMessage } from "./lib/inscriber-client.mjs";
+    import { encodeQr, drawQr } from "./lib/qr.mjs";
 
     const TREASURY_MAX_BAD = 1000;
     const TREASURY_ADDRESS = "BADDoGmLTiLyv1wZjVqjzcYKz6WKkNYUZ8";
@@ -720,11 +744,18 @@
     const treasuryStatus = document.querySelector("[data-treasury-status]");
     const walletOutput = document.querySelector("[data-wallet-output]");
     const walletStatus = document.querySelector("[data-wallet-status]");
+    const faucetStatus = document.querySelector("[data-faucet-status]");
+    const faucetQr = document.querySelector("[data-faucet-qr]");
+    const requestFaucetBtn = document.querySelector("[data-request-faucet]");
+    const verifyBurnBtn = document.querySelector("[data-verify-burn]");
+    const burnIdLine = document.querySelector("[data-burn-id]");
     const coldAddress = document.querySelector("[data-cold-address]");
     const coldWif = document.querySelector("[data-cold-wif]");
     const clearWalletBtn = document.querySelector("[data-clear-wallet]");
     const printSheet = document.querySelector("[data-print-sheet]");
     let currentColdWallet = null;
+    let currentBurnId = "";
+    let pollTimer = null;
 
     renderTreasuryGauge(0, TREASURY_MAX_BAD);
     refreshTreasuryGauge();
@@ -734,9 +765,17 @@
       refreshTreasuryGauge();
     });
     document.querySelector("[data-reset-flow]")?.addEventListener("click", () => {
+      stopPoll();
+      currentBurnId = "";
       addressInput.value = "";
       balance.textContent = "not checked";
+      setFaucetStatus("Enter a BadCoin address, then request 10 BAD.");
+      burnIdLine.textContent = "";
+      verifyBurnBtn.disabled = true;
+      clearQr();
     });
+    requestFaucetBtn?.addEventListener("click", requestFaucet);
+    verifyBurnBtn?.addEventListener("click", () => verifyBurnNow({ manual: true }));
     document.querySelector("[data-generate-wallet]")?.addEventListener("click", () => {
       try {
         currentColdWallet = generateBadCoinColdWallet();
@@ -819,6 +858,110 @@
         maximumFractionDigits: 2,
       });
       treasuryGauge.style.setProperty("--treasury-ratio", String(ratio));
+    }
+
+    function setFaucetStatus(text, tone = "") {
+      faucetStatus.textContent = text;
+      if (tone) faucetStatus.dataset.tone = tone;
+      else faucetStatus.removeAttribute("data-tone");
+    }
+
+    function clearQr() {
+      faucetQr.dataset.ready = "false";
+      faucetQr.textContent = "HPP QR\npending";
+    }
+
+    function showQr(burnUri) {
+      const qr = encodeQr(burnUri, { ecc: "M" });
+      if (!qr.ok) {
+        clearQr();
+        return false;
+      }
+      faucetQr.textContent = "";
+      faucetQr.dataset.ready = "true";
+      const canvas = document.createElement("canvas");
+      const scale = 5;
+      const dim = (qr.size + 8) * scale;
+      canvas.width = dim;
+      canvas.height = dim;
+      drawQr(canvas.getContext("2d"), qr, { scale });
+      faucetQr.append(canvas);
+      return true;
+    }
+
+    async function requestFaucet() {
+      stopPoll();
+      clearQr();
+      verifyBurnBtn.disabled = true;
+      currentBurnId = "";
+      const address = addressInput.value.trim();
+      if (!address) {
+        setFaucetStatus("Enter a BadCoin public address first.", "warn");
+        return;
+      }
+      requestFaucetBtn.disabled = true;
+      setFaucetStatus("Preparing HPP burn. No credits are spent yet.");
+      const prepared = await prepareClaimRequest({
+        address,
+        message: "BADCOIN FAUCET",
+        kind: "faucet",
+      });
+      requestFaucetBtn.disabled = false;
+      if (!prepared.ok || !prepared.burn_uri) {
+        setFaucetStatus(prepareFailureMessage(prepared), "warn");
+        return;
+      }
+      currentBurnId = prepared.burn_id || "";
+      burnIdLine.textContent = currentBurnId ? `Burn ${currentBurnId}` : "";
+      if (!showQr(prepared.burn_uri)) {
+        setFaucetStatus("HPP prepared the burn, but the page could not draw the QR.", "warn");
+        return;
+      }
+      verifyBurnBtn.disabled = false;
+      setFaucetStatus("Scan with HPP. After the burn, this page will verify and send 10 BAD.");
+      startPoll();
+    }
+
+    async function verifyBurnNow({ manual = false } = {}) {
+      if (!currentBurnId) {
+        if (manual) setFaucetStatus("No HPP burn is prepared yet.", "warn");
+        return;
+      }
+      const verified = await verifyClaimRequest({ burnId: currentBurnId });
+      if (!verified.ok) {
+        if (manual) setFaucetStatus(verified.message || `Cannot verify burn (${verified.reason || "unknown"}).`, "warn");
+        return;
+      }
+      const claim = await getClaimRequest({ burnId: currentBurnId });
+      const status = verified.status || claim.status;
+      if (verified.paid || status === "paid") {
+        stopPoll();
+        verifyBurnBtn.disabled = true;
+        setFaucetStatus(`Paid 10 BAD. Txid ${verified.txid || claim.txid}.`, "ok");
+        refreshTreasuryGauge();
+        return;
+      }
+      if (status === "paying") {
+        setFaucetStatus("Burn confirmed. Treasury payment is being sent.");
+        return;
+      }
+      if (verified.burned || status === "burned") {
+        setFaucetStatus("Burn confirmed. Waiting for the treasury payment.");
+        return;
+      }
+      if (manual) {
+        setFaucetStatus("HPP has not reported the burn yet. Keep this page open after confirming on the phone.");
+      }
+    }
+
+    function startPoll() {
+      stopPoll();
+      pollTimer = window.setInterval(() => verifyBurnNow(), 3000);
+    }
+
+    function stopPoll() {
+      if (pollTimer) window.clearInterval(pollTimer);
+      pollTimer = null;
     }
 
     async function refreshTreasuryGauge() {
