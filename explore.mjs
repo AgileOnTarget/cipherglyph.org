@@ -62,6 +62,36 @@ function lookupBadge(item) {
   return item.badge || "";
 }
 
+async function lookupViaBadcoinExtension(address) {
+  const provider = window.badcoin;
+  if (!provider || typeof provider.lookupGlyphs !== "function") return null;
+  const res = await provider.lookupGlyphs(address);
+  const items = Array.isArray(res?.items) ? res.items.map(extensionRow) : [];
+  return {
+    ok: true,
+    reachable: true,
+    reason: items.length ? "ok_extension" : "empty_extension",
+    source: "extension_live",
+    truncated: Boolean(res?.truncated),
+    items,
+  };
+}
+
+function extensionRow(row) {
+  return {
+    txid: typeof row?.txid === "string" ? row.txid : "",
+    outputIndex: typeof row?.outputIndex === "number" ? row.outputIndex : 0,
+    message: typeof row?.message === "string" ? row.message : "",
+    height: row.blockHeight ?? null,
+    readable: true,
+    badge: "BADGLYPH VERIFIED",
+    source: "live_explorer",
+    payloadHex: typeof row?.payloadHex === "string" ? row.payloadHex : "",
+    ambiguous: false,
+    gly1OutputCount: 1,
+  };
+}
+
 function wireAddressLookup(root) {
   const input = $("[data-lookup-input]", root);
   const btn = $("[data-lookup-go]", root);
@@ -77,10 +107,14 @@ function wireAddressLookup(root) {
       return;
     }
     setNote(note, "Looking up public BadCoin Glyphs.", "");
-    const res = await lookupBadcoinAddress({
-      address: input.value.trim(),
-      addressCheck,
-    });
+    const address = input.value.trim();
+    let res = await lookupViaBadcoinExtension(address);
+    if (res === null) {
+      res = await lookupBadcoinAddress({
+        address,
+        addressCheck,
+      });
+    }
     const reachable = res.reachable !== false;
     const view = buildAddressView({
       reachable,
@@ -88,7 +122,9 @@ function wireAddressLookup(root) {
       addressCheck,
     });
     const tone = view.state === LOOKUP.OK ? "ok" : "warn";
-    const suffix = res.source === "snapshot"
+    const suffix = res.source === "extension_live"
+      ? " Loaded live through the BadCoin Chrome wallet."
+      : res.source === "snapshot"
       ? ` Loaded from the public chain snapshot generated ${res.snapshotGeneratedAt}.`
       : "";
     const truncation = res.truncated ? " Lookup hit the MVP history cap, so the list may be incomplete." : "";
