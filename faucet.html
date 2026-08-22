@@ -92,6 +92,119 @@
       font-weight: 800;
       color: var(--orange);
     }
+    .treasury-panel {
+      width: min(100%, 18rem);
+      display: grid;
+      justify-items: center;
+      gap: 0.2rem;
+      padding: 0.45rem 0.65rem 0.55rem;
+      background: var(--paper);
+      border: 1px solid var(--rules);
+      border-radius: 8px;
+      box-shadow: 0 6px 18px #251b0b14;
+    }
+    .treasury-top {
+      display: flex;
+      align-items: baseline;
+      gap: 0.25rem;
+      font-family: ui-monospace, monospace;
+      color: var(--ink);
+    }
+    .treasury-amount {
+      font-size: 1.2rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .treasury-unit {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+    .treasury-gauge {
+      position: relative;
+      width: 12.6rem;
+      height: 6.7rem;
+      overflow: hidden;
+      margin-top: -0.05rem;
+    }
+    .treasury-arc {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -5.9rem;
+      height: 12rem;
+      border-radius: 50%;
+      background:
+        conic-gradient(from 270deg,
+          #ed1c2b 0deg 34deg,
+          #ff9f1c 34deg 70deg,
+          #fff01f 70deg 112deg,
+          #33b653 112deg 180deg,
+          transparent 180deg 360deg);
+      transform: rotate(calc((var(--treasury-ratio, 1) - 1) * 0deg));
+    }
+    .treasury-arc::after {
+      content: "";
+      position: absolute;
+      inset: 1.25rem;
+      border-radius: 50%;
+      background: var(--paper);
+    }
+    .treasury-needle {
+      position: absolute;
+      left: 50%;
+      bottom: 0.55rem;
+      width: 5.2rem;
+      height: 0.34rem;
+      background: #ed1c2b;
+      border-radius: 999px;
+      transform-origin: 0.15rem 50%;
+      transform: rotate(calc(-178deg + (var(--treasury-ratio, 1) * 176deg)));
+      box-shadow: 0 1px 3px #2a110b66;
+    }
+    .treasury-needle::after {
+      content: "";
+      position: absolute;
+      left: -0.5rem;
+      top: 50%;
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      background: var(--ink);
+      transform: translateY(-50%);
+    }
+    .treasury-logo {
+      position: absolute;
+      left: 50%;
+      top: 2.55rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      object-fit: cover;
+      transform: translateX(-50%);
+      border: 2px solid #fffaf0;
+      box-shadow: 0 0 0 1px #8e140e;
+      z-index: 2;
+    }
+    .treasury-labels {
+      position: absolute;
+      left: 0.2rem;
+      right: 0.2rem;
+      bottom: 0;
+      display: flex;
+      justify-content: space-between;
+      font-family: ui-monospace, monospace;
+      font-weight: 900;
+      font-size: 1.25rem;
+    }
+    .treasury-caption {
+      margin: -0.15rem 0 0;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 900;
+      color: #4a6358;
+    }
     .hero-body {
       display: grid;
       grid-template-columns: 1fr;
@@ -109,26 +222,10 @@
       padding: 1rem;
       box-shadow: 0 8px 24px #251b0b12;
     }
-    .gate-visual {
-      display: grid;
-      grid-template-columns: minmax(7rem, 10rem) 4rem;
-      gap: 0.9rem;
-      align-items: end;
-      margin-bottom: 1rem;
-    }
-    .badcoin-mascot {
-      width: min(10rem, 100%);
-      aspect-ratio: 2 / 3;
-      object-fit: cover;
-      object-position: center;
-      border-radius: 8px;
-      border: 1px solid #220705;
-      background: #050202;
-      box-shadow: 0 14px 28px #251b0b2e;
-    }
     .gate-symbol {
       width: 4rem;
       height: 4rem;
+      margin-bottom: 1rem;
       position: relative;
       display: grid;
       place-items: center;
@@ -429,7 +526,7 @@
     @media (max-width: 640px) {
       .qr-row { grid-template-columns: 1fr; }
       .qr-frame { width: 100%; height: 10rem; }
-      .gate-visual { grid-template-columns: 7rem 4rem; }
+      .treasury-panel { width: 100%; }
     }
   </style>
 </head>
@@ -462,21 +559,30 @@
             <h1>BADCOIN <span>FAUCET</span></h1>
           </div>
         </div>
-        <p class="tagline">10 BAD per HPP request.</p>
+        <aside class="treasury-panel" aria-label="BadCoin faucet treasury">
+          <div class="treasury-top">
+            <span class="treasury-amount" data-treasury-available>1000</span>
+            <span class="treasury-unit">BAD</span>
+          </div>
+          <div class="treasury-gauge" data-treasury-gauge style="--treasury-ratio: 1">
+            <div class="treasury-arc" aria-hidden="true"></div>
+            <img class="treasury-logo" src="assets/badcoin-logo.jpg" width="40" height="40" alt="">
+            <div class="treasury-needle" aria-hidden="true"></div>
+            <div class="treasury-labels" aria-hidden="true"><span>E</span><span>F</span></div>
+          </div>
+          <p class="treasury-caption">BadCoin available</p>
+        </aside>
       </div>
       <div class="hero-body">
         <article class="gate-card">
-          <div class="gate-visual">
-            <img class="badcoin-mascot" src="assets/badcoin-mascot.jpg" width="600" height="900" alt="BadCoin mascot">
-            <div class="gate-symbol" aria-hidden="true">
-              <span class="pulse-ring"></span>
-              <span class="pulse-ring"></span>
-              <span class="pulse-ring"></span>
-              <svg viewBox="0 0 80 92" width="64" height="74">
-                <polygon points="40,4 74,24 74,68 40,88 6,68 6,24" fill="none" stroke="currentColor" stroke-width="5"/>
-                <path d="M40 21v50M24 37h32M24 55h32" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="square"/>
-              </svg>
-            </div>
+          <div class="gate-symbol" aria-hidden="true">
+            <span class="pulse-ring"></span>
+            <span class="pulse-ring"></span>
+            <span class="pulse-ring"></span>
+            <svg viewBox="0 0 80 92" width="64" height="74">
+              <polygon points="40,4 74,24 74,68 40,88 6,68 6,24" fill="none" stroke="currentColor" stroke-width="5"/>
+              <path d="M40 21v50M24 37h32M24 55h32" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="square"/>
+            </svg>
           </div>
           <p class="gate-label">Human Presence Protocol gate</p>
           <h2 class="gate-title">One human moment. Ten BAD.</h2>
@@ -590,8 +696,13 @@
   <script type="module">
     import { drawColdWalletPng, generateBadCoinColdWallet } from "./lib/badcoin-cold-wallet.mjs";
 
+    const TREASURY_MAX_BAD = 1000;
+    const TREASURY_AVAILABLE_BAD = 1000;
+
     const balance = document.querySelector("[data-balance]");
     const addressInput = document.getElementById("badcoin-address");
+    const treasuryAvailable = document.querySelector("[data-treasury-available]");
+    const treasuryGauge = document.querySelector("[data-treasury-gauge]");
     const walletOutput = document.querySelector("[data-wallet-output]");
     const walletStatus = document.querySelector("[data-wallet-status]");
     const coldAddress = document.querySelector("[data-cold-address]");
@@ -599,6 +710,8 @@
     const clearWalletBtn = document.querySelector("[data-clear-wallet]");
     const printSheet = document.querySelector("[data-print-sheet]");
     let currentColdWallet = null;
+
+    renderTreasuryGauge(TREASURY_AVAILABLE_BAD, TREASURY_MAX_BAD);
 
     document.querySelector("[data-refresh-balance]")?.addEventListener("click", () => {
       balance.textContent = "treasury lookup not connected yet";
@@ -679,6 +792,14 @@
         '"': "&quot;",
         "'": "&#39;",
       })[ch]);
+    }
+
+    function renderTreasuryGauge(available, max) {
+      const boundedMax = Math.max(1, Number(max) || 1);
+      const boundedAvailable = Math.max(0, Math.min(boundedMax, Number(available) || 0));
+      const ratio = boundedAvailable / boundedMax;
+      treasuryAvailable.textContent = Math.round(boundedAvailable).toLocaleString("en-US");
+      treasuryGauge.style.setProperty("--treasury-ratio", String(ratio));
     }
   </script>
 </body>
