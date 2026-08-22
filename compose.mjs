@@ -2,7 +2,8 @@
  * CipherGlyph composer. BACKLOG: ND-SITE-012. ADR-0008.
  *
  * A text window makes Glyphs. The chain stores the letters, not a drawing.
- * Caesar and Vigenere change the sheet only. GLY1 hex is the plain message.
+ * The public creator uses plain GLY1. The teaching page keeps Caesar and
+ * Vigenere as classroom overlays.
  */
 import { encodeMessage, decodeStream, LETTERS, SHAPE_NAMES, glyphForLetter } from "./lib/cipherglyph.mjs";
 import { buildSheetSvg, paintSheet, svgToDataUrl } from "./lib/cipherglyph-svg.mjs";
