@@ -54,19 +54,12 @@
       gap: 0.85rem;
     }
     .brand-coin {
-      width: 2.55rem;
-      height: 2.55rem;
+      width: 2.9rem;
+      height: 2.9rem;
       border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: var(--orange);
-      color: #fffaf0;
-      border: 3px double #fffaf0;
-      box-shadow: 0 0 0 2px var(--orange);
-      font-family: ui-monospace, monospace;
-      font-weight: 900;
-      font-size: 1.25rem;
-      letter-spacing: 0;
+      object-fit: cover;
+      border: 2px solid #fffaf0;
+      box-shadow: 0 0 0 2px #8e140e, 0 5px 12px #2a110b3d;
     }
     .chain {
       font-size: 0.72rem;
@@ -116,10 +109,26 @@
       padding: 1rem;
       box-shadow: 0 8px 24px #251b0b12;
     }
+    .gate-visual {
+      display: grid;
+      grid-template-columns: minmax(7rem, 10rem) 4rem;
+      gap: 0.9rem;
+      align-items: end;
+      margin-bottom: 1rem;
+    }
+    .badcoin-mascot {
+      width: min(10rem, 100%);
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 8px;
+      border: 1px solid #220705;
+      background: #050202;
+      box-shadow: 0 14px 28px #251b0b2e;
+    }
     .gate-symbol {
       width: 4rem;
       height: 4rem;
-      margin: 0 0 1rem;
       position: relative;
       display: grid;
       place-items: center;
@@ -420,6 +429,7 @@
     @media (max-width: 640px) {
       .qr-row { grid-template-columns: 1fr; }
       .qr-frame { width: 100%; height: 10rem; }
+      .gate-visual { grid-template-columns: 7rem 4rem; }
     }
   </style>
 </head>
@@ -445,7 +455,7 @@
     <section class="faucet-hero">
       <div class="hero-top">
         <div class="lockup">
-          <span class="brand-coin" aria-hidden="true">B</span>
+          <img class="brand-coin" src="assets/badcoin-logo.jpg" width="46" height="46" alt="BadCoin logo">
           <div>
             <div class="chain">BadCoin Faucet</div>
             <div class="chain-standard">Human-gated distribution</div>
@@ -456,14 +466,17 @@
       </div>
       <div class="hero-body">
         <article class="gate-card">
-          <div class="gate-symbol" aria-hidden="true">
-            <span class="pulse-ring"></span>
-            <span class="pulse-ring"></span>
-            <span class="pulse-ring"></span>
-            <svg viewBox="0 0 80 92" width="64" height="74">
-              <polygon points="40,4 74,24 74,68 40,88 6,68 6,24" fill="none" stroke="currentColor" stroke-width="5"/>
-              <path d="M40 21v50M24 37h32M24 55h32" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="square"/>
-            </svg>
+          <div class="gate-visual">
+            <img class="badcoin-mascot" src="assets/badcoin-mascot.jpg" width="600" height="900" alt="BadCoin mascot">
+            <div class="gate-symbol" aria-hidden="true">
+              <span class="pulse-ring"></span>
+              <span class="pulse-ring"></span>
+              <span class="pulse-ring"></span>
+              <svg viewBox="0 0 80 92" width="64" height="74">
+                <polygon points="40,4 74,24 74,68 40,88 6,68 6,24" fill="none" stroke="currentColor" stroke-width="5"/>
+                <path d="M40 21v50M24 37h32M24 55h32" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="square"/>
+              </svg>
+            </div>
           </div>
           <p class="gate-label">Human Presence Protocol gate</p>
           <h2 class="gate-title">One human moment. Ten BAD.</h2>
