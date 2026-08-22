@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BadCoin Faucet · CipherGlyph</title>
+  <link rel="icon" href="assets/mark.png">
+  <link rel="stylesheet" href="css/site.css">
+  <style>
+    :root {
+      --paper: #f7f3e8;
+      --ground: #efe7d6;
+      --ink: #171714;
+      --deep: #173f33;
+      --orange: #e36a1a;
+      --rules: #c8c1ad;
+      --ok: #1d5e2a;
+      --warn: #7a3a10;
+      --shadow: 0 18px 48px #251b0b1f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background-color: var(--ground);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E"),
+        repeating-linear-gradient(145deg, #00000008 0 1px, transparent 1px 18px);
+      font-family: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", ui-sans-serif, system-ui, sans-serif;
+      padding: 0;
+    }
+    main { max-width: 76rem; margin: 0 auto; padding: 0.8rem 1rem 3rem; }
+    .faucet-hero {
+      background: #fffaf0;
+      border: 1px solid #d8cdb7;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .hero-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--rules);
+    }
+    .lockup {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .brand-coin {
+      width: 2.55rem;
+      height: 2.55rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--orange);
+      color: #fffaf0;
+      border: 3px double #fffaf0;
+      box-shadow: 0 0 0 2px var(--orange);
+      font-family: ui-monospace, monospace;
+      font-weight: 900;
+      font-size: 1.25rem;
+      letter-spacing: 0;
+    }
+    .chain {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.65;
+    }
+    .chain-standard {
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 800;
+      margin-top: -0.2rem;
+    }
+    h1 {
+      font-size: clamp(1.45rem, 3vw, 2.05rem);
+      letter-spacing: 0.06em;
+      margin: 0.05rem 0 0.1rem;
+      color: var(--ink);
+      font-weight: 800;
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+    h1 span { color: var(--orange); }
+    .tagline {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: clamp(0.85rem, 2.2vw, 1.25rem);
+      margin: 0;
+      font-weight: 800;
+      color: var(--orange);
+    }
+    .hero-body {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 1rem;
+      align-items: stretch;
+    }
+    @media (min-width: 64rem) {
+      .hero-body { grid-template-columns: minmax(22rem, 30rem) 1fr; }
+    }
+    .gate-card, .faucet-card {
+      background: var(--paper);
+      border: 1px solid var(--rules);
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 8px 24px #251b0b12;
+    }
+    .gate-symbol {
+      width: 4rem;
+      height: 4rem;
+      margin: 0 0 1rem;
+      position: relative;
+      display: grid;
+      place-items: center;
+      color: var(--deep);
+    }
+    .pulse-ring {
+      position: absolute;
+      inset: -0.6rem;
+      border-radius: 50%;
+      border: 1px solid var(--orange);
+      opacity: 0;
+      animation: pulse 3s ease-out infinite;
+    }
+    .pulse-ring:nth-child(2) { animation-delay: 1s; }
+    .pulse-ring:nth-child(3) { animation-delay: 2s; }
+    @keyframes pulse {
+      0% { transform: scale(0.8); opacity: 0.45; }
+      100% { transform: scale(1.75); opacity: 0; }
+    }
+    .gate-label {
+      font-family: ui-monospace, monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 0.35rem;
+      font-weight: 800;
+    }
+    .gate-title {
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      line-height: 1.05;
+      margin: 0 0 0.6rem;
+      text-transform: uppercase;
+    }
+    .lead {
+      color: #4a6358;
+      font-size: 1rem;
+      margin: 0 0 0.85rem;
+    }
+    .status-note {
+      border-left: 5px solid var(--orange);
+      background: #fffaf0;
+      border-top: 1px solid #d8cdb7;
+      border-right: 1px solid #d8cdb7;
+      border-bottom: 1px solid #d8cdb7;
+      padding: 0.8rem 0.9rem;
+      margin: 0.9rem 0 0;
+      font-size: 0.95rem;
+    }
+    label {
+      display: block;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      margin-bottom: 0.3rem;
+    }
+    input[type=text] {
+      width: 100%;
+      font-family: ui-monospace, monospace;
+      font-size: 0.95rem;
+      padding: 0.55rem;
+      border: 1px solid var(--rules);
+      background: #fffdf6;
+      border-radius: 6px;
+    }
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 0.7rem 0;
+    }
+    button, .button-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.5rem 0.75rem;
+      border: 2px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      text-decoration: none;
+      cursor: pointer;
+      min-height: 2.35rem;
+    }
+    button.secondary, .button-link.secondary {
+      background: #fffdf6;
+      color: var(--ink);
+    }
+    button:disabled, .button-link[aria-disabled="true"] {
+      cursor: not-allowed;
+      opacity: 0.72;
+      background: #fffdf6;
+      color: var(--warn);
+      border-color: var(--warn);
+    }
+    .balance-line {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+      margin: 0.7rem 0 0.2rem;
+      font-family: ui-monospace, monospace;
+      font-size: 0.88rem;
+    }
+    .qr-row {
+      display: grid;
+      grid-template-columns: 8rem 1fr;
+      gap: 0.85rem;
+      align-items: center;
+      background: #fffaf0;
+      border: 1px solid #d8cdb7;
+      padding: 0.85rem;
+      margin-top: 0.9rem;
+      border-radius: 8px;
+    }
+    .qr-frame {
+      width: 8rem;
+      height: 8rem;
+      display: grid;
+      place-items: center;
+      background: #fffdf6;
+      border: 1px solid var(--rules);
+      font-family: ui-monospace, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #4a6358;
+      text-align: center;
+      background-image:
+        linear-gradient(#d8d1bb55 1px, transparent 1px),
+        linear-gradient(90deg, #d8d1bb55 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .qr-caption {
+      display: block;
+      font-family: ui-monospace, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #4a6358;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+    }
+    .app-store-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 15px 8px;
+      background: #000;
+      border: 1px solid #000;
+      border-radius: 9px;
+      text-decoration: none;
+      width: fit-content;
+      color: #fff;
+      margin-top: 0.55rem;
+    }
+    .app-store-badge:hover { opacity: 0.82; }
+    .app-store-badge .asb-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+      text-align: left;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #fff;
+    }
+    .asb-small { font-size: 0.6rem; }
+    .asb-large { font-size: 1.08rem; font-weight: 500; }
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+      margin: 1rem 0 0;
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 2.2rem 1fr;
+      gap: 0.65rem;
+      align-items: start;
+      background: #fffaf0;
+      border: 1px solid #d8cdb7;
+      padding: 0.7rem;
+      border-radius: 8px;
+    }
+    .step-num {
+      width: 2.2rem;
+      height: 2.2rem;
+      border: 2px solid var(--orange);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      color: var(--orange);
+      font-family: ui-monospace, monospace;
+    }
+    .step h3 {
+      margin: 0;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .step p { margin: 0.1rem 0 0; font-size: 0.9rem; color: #4a6358; }
+    .wallet-note {
+      margin-top: 1rem;
+      background: var(--paper);
+      border: 1px solid var(--rules);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .foot {
+      margin-top: 2.5rem;
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      opacity: 0.8;
+    }
+    @media (max-width: 640px) {
+      .qr-row { grid-template-columns: 1fr; }
+      .qr-frame { width: 100%; height: 10rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/mark.png" width="40" height="40" alt="">
+        <span>CIPHER<span class="glyph">GLYPH</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">HOME</a>
+        <a href="about.html">ABOUT</a>
+        <a href="cipherglyph.html">LEARN</a>
+        <a class="active" href="faucet.html">FAUCET</a>
+        <a href="privacy.html">PRIVACY</a>
+        <a href="support.html">SUPPORT</a>
+        <a href="index.html#handoff">INSCRIBE</a>
+      </div>
+    </div>
+  </nav>
+  <main>
+    <section class="faucet-hero">
+      <div class="hero-top">
+        <div class="lockup">
+          <span class="brand-coin" aria-hidden="true">B</span>
+          <div>
+            <div class="chain">BadCoin Faucet</div>
+            <div class="chain-standard">Human-gated distribution</div>
+            <h1>BADCOIN <span>FAUCET</span></h1>
+          </div>
+        </div>
+        <p class="tagline">10 BAD per HPP request.</p>
+      </div>
+      <div class="hero-body">
+        <article class="gate-card">
+          <div class="gate-symbol" aria-hidden="true">
+            <span class="pulse-ring"></span>
+            <span class="pulse-ring"></span>
+            <span class="pulse-ring"></span>
+            <svg viewBox="0 0 80 92" width="64" height="74">
+              <polygon points="40,4 74,24 74,68 40,88 6,68 6,24" fill="none" stroke="currentColor" stroke-width="5"/>
+              <path d="M40 21v50M24 37h32M24 55h32" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="square"/>
+            </svg>
+          </div>
+          <p class="gate-label">Human Presence Protocol gate</p>
+          <h2 class="gate-title">One human moment. Ten BAD.</h2>
+          <p class="lead">The faucet is a proof-of-concept rate limiter. HPP proves that a real person was present for the request. BadCoin is released only after the Presence Credit burn succeeds.</p>
+          <p class="status-note"><strong>POC status.</strong> This page is the public faucet surface. HPP verification and treasury deposit wiring are next. It does not send BAD yet.</p>
+          <a href="https://apps.apple.com/app/human-presence-protocol-hpp/id6762528053" class="app-store-badge" target="_blank" rel="noopener noreferrer" aria-label="Download Human Presence Protocol on the App Store">
+            <svg width="22" height="26" viewBox="0 0 22 26" aria-hidden="true"><path fill="#fff" d="M17.9 13.8c0-3 2.4-4.5 2.5-4.6-1.4-2.1-3.6-2.4-4.4-2.4-1.9-.2-3.7 1.1-4.6 1.1-.9 0-2.4-1.1-4-1-2 0-3.9 1.2-5 3-2.1 3.6-.5 9 1.5 12 1 1.5 2.2 3.1 3.8 3 1.5-.1 2.1-1 4-1s2.4 1 4 1c1.6 0 2.7-1.5 3.7-2.9 1.1-1.7 1.6-3.3 1.6-3.4-.1-.1-3.1-1.3-3.1-4.8ZM14.8 4.8c.8-1 1.4-2.4 1.2-3.8-1.2.1-2.7.8-3.6 1.8-.8.9-1.5 2.3-1.3 3.7 1.4.1 2.8-.7 3.7-1.7Z"/></svg>
+            <span class="asb-text"><span class="asb-small">Download on the</span><span class="asb-large">App Store</span></span>
+          </a>
+        </article>
+
+        <article class="faucet-card">
+          <label for="badcoin-address">BadCoin public address</label>
+          <input id="badcoin-address" type="text" inputmode="latin" autocomplete="off" placeholder="BADCoinT4LZuc2vXoAk8sPhsMRnzeqscPJ">
+          <div class="balance-line">
+            <span>Balance: <strong data-balance>not checked</strong></span>
+            <button type="button" class="secondary" data-refresh-balance>Refresh balance</button>
+          </div>
+          <div class="button-row">
+            <button type="button" data-request-faucet disabled>Request 10 BAD</button>
+            <button type="button" class="secondary" data-reset-flow>Reset</button>
+          </div>
+          <div class="qr-row">
+            <div class="qr-frame" aria-label="HPP faucet QR placeholder">HPP QR<br>pending</div>
+            <div>
+              <span class="qr-caption">Scan with HPP iPhone app</span>
+              <p class="lead">After the request is prepared, scan this QR code, complete biometric attestation, and burn 1 Presence Credit.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="steps" aria-label="BadCoin faucet steps">
+      <div class="step">
+        <span class="step-num">1</span>
+        <div><h3>Install HPP</h3><p>Install Human Presence Protocol free from the App Store.</p></div>
+      </div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <div><h3>Attest on iPhone</h3><p>Complete biometric attestation on the iPhone to get free Presence Credits.</p></div>
+      </div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <div><h3>Enter BadCoin address</h3><p>Paste your BadCoin public address, check balance, then request 10 BAD.</p></div>
+      </div>
+      <div class="step">
+        <span class="step-num">4</span>
+        <div><h3>Scan QR</h3><p>Scan the faucet QR code with HPP.</p></div>
+      </div>
+      <div class="step">
+        <span class="step-num">5</span>
+        <div><h3>Burn 1 Presence Credit</h3><p>The HPP burn is the rate limiter for the faucet request.</p></div>
+      </div>
+      <div class="step">
+        <span class="step-num">6</span>
+        <div><h3>Refresh balance</h3><p>After the treasury deposit is broadcast, refresh balance to see the new BAD.</p></div>
+      </div>
+    </section>
+
+    <section class="wallet-note">
+      <h2>Need a BadCoin wallet?</h2>
+      <p class="lead">Cold-storage PDF and PNG downloads will live here before the faucet goes live. Keep private keys offline. Never paste a private key into this website.</p>
+      <div class="button-row">
+        <a class="button-link secondary" aria-disabled="true" href="#">Cold storage PDF soon</a>
+        <a class="button-link secondary" aria-disabled="true" href="#">Cold storage PNG soon</a>
+      </div>
+    </section>
+
+    <p class="foot">BADCOIN FAUCET · HPP RATE LIMIT · TREASURY POC · STATIC PREVIEW</p>
+  </main>
+  <footer>
+    <div class="footer-row">
+      <span>
+        <a href="index.html">HOME</a>
+        &nbsp;·&nbsp;
+        <a href="about.html">ABOUT</a>
+        &nbsp;·&nbsp;
+        <a href="cipherglyph.html">LEARN</a>
+        &nbsp;·&nbsp;
+        <a href="faucet.html">FAUCET</a>
+        &nbsp;·&nbsp;
+        <a href="privacy.html">PRIVACY</a>
+        &nbsp;·&nbsp;
+        <a href="support.html">SUPPORT</a>
+      </span>
+      <span>2026 Agile On Target LLC</span>
+    </div>
+  </footer>
+  <script>
+    const balance = document.querySelector("[data-balance]");
+    document.querySelector("[data-refresh-balance]")?.addEventListener("click", () => {
+      balance.textContent = "treasury lookup not connected yet";
+    });
+    document.querySelector("[data-reset-flow]")?.addEventListener("click", () => {
+      document.getElementById("badcoin-address").value = "";
+      balance.textContent = "not checked";
+    });
+  </script>
+</body>
+</html>
