@@ -186,6 +186,19 @@
       background: #fffdf6;
       border-radius: 6px;
     }
+    textarea {
+      width: 100%;
+      min-height: 4.4rem;
+      resize: vertical;
+      font-family: ui-monospace, monospace;
+      font-size: 0.9rem;
+      line-height: 1.35;
+      padding: 0.55rem;
+      border: 1px solid var(--rules);
+      background: #fffdf6;
+      border-radius: 6px;
+      color: var(--ink);
+    }
     .button-row {
       display: flex;
       flex-wrap: wrap;
@@ -333,6 +346,70 @@
       border-radius: 8px;
       padding: 1rem;
     }
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+    }
+    @media (min-width: 58rem) {
+      .wallet-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .wallet-field {
+      display: grid;
+      gap: 0.35rem;
+    }
+    .wallet-warning {
+      border-left: 5px solid var(--orange);
+      background: #fffaf0;
+      border-top: 1px solid #d8cdb7;
+      border-right: 1px solid #d8cdb7;
+      border-bottom: 1px solid #d8cdb7;
+      padding: 0.8rem 0.9rem;
+      color: #4a3020;
+      margin: 0.8rem 0;
+    }
+    .wallet-output[hidden] { display: none; }
+    .wallet-output {
+      margin-top: 0.8rem;
+      border-top: 1px solid var(--rules);
+      padding-top: 0.8rem;
+    }
+    .wallet-status {
+      min-height: 1.2rem;
+      margin: 0.2rem 0 0;
+      color: #4a6358;
+      font-family: ui-monospace, monospace;
+      font-size: 0.85rem;
+    }
+    .wallet-status[data-state="error"] { color: #a02714; }
+    .print-sheet {
+      display: none;
+    }
+    @media print {
+      body > :not(.print-sheet) { display: none !important; }
+      .print-sheet {
+        display: block;
+        padding: 1in;
+        color: #111;
+        background: #fff;
+        font-family: Arial, sans-serif;
+      }
+      .print-sheet h1 {
+        color: #111;
+        font-size: 32pt;
+        letter-spacing: 0;
+      }
+      .print-sheet code {
+        display: block;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        border: 1px solid #999;
+        padding: 12pt;
+        margin: 6pt 0 18pt;
+        font-size: 14pt;
+      }
+    }
     .foot {
       margin-top: 2.5rem;
       font-family: ui-monospace, monospace;
@@ -449,15 +526,36 @@
 
     <section class="wallet-note">
       <h2>Need a BadCoin wallet?</h2>
-      <p class="lead">Cold-storage PDF and PNG downloads will live here before the faucet goes live. Keep private keys offline. Never paste a private key into this website.</p>
+      <p class="lead">Generate a fresh BadCoin cold wallet in this browser. Use the public address for the faucet. Keep the WIF private and offline.</p>
+      <p class="wallet-warning"><strong>Cold storage warning.</strong> This page does not send the private key anywhere, but a web page is still a hot environment while it is open. Save the PNG or print to PDF, then clear the page before funding the address.</p>
       <div class="button-row">
-        <a class="button-link secondary" aria-disabled="true" href="#">Cold storage PDF soon</a>
-        <a class="button-link secondary" aria-disabled="true" href="#">Cold storage PNG soon</a>
+        <button type="button" data-generate-wallet>Generate cold wallet</button>
+        <button type="button" class="secondary" data-clear-wallet disabled>Clear wallet</button>
+      </div>
+      <p class="wallet-status" data-wallet-status>Ready. No wallet generated.</p>
+      <div class="wallet-output" data-wallet-output hidden>
+        <div class="wallet-grid">
+          <div class="wallet-field">
+            <label for="cold-address">Public address</label>
+            <textarea id="cold-address" data-cold-address readonly spellcheck="false"></textarea>
+          </div>
+          <div class="wallet-field">
+            <label for="cold-wif">Private key WIF</label>
+            <textarea id="cold-wif" data-cold-wif readonly spellcheck="false"></textarea>
+          </div>
+        </div>
+        <div class="button-row">
+          <button type="button" class="secondary" data-use-address>Use this address</button>
+          <button type="button" class="secondary" data-copy-address>Copy address</button>
+          <button type="button" class="secondary" data-download-png>Download PNG</button>
+          <button type="button" class="secondary" data-print-pdf>Print or save PDF</button>
+        </div>
       </div>
     </section>
 
     <p class="foot">BADCOIN FAUCET · HPP RATE LIMIT · TREASURY POC · STATIC PREVIEW</p>
   </main>
+  <section class="print-sheet" aria-hidden="true" data-print-sheet></section>
   <footer>
     <div class="footer-row">
       <span>
@@ -476,15 +574,99 @@
       <span>2026 Agile On Target LLC</span>
     </div>
   </footer>
-  <script>
+  <script type="module">
+    import { drawColdWalletPng, generateBadCoinColdWallet } from "./lib/badcoin-cold-wallet.mjs";
+
     const balance = document.querySelector("[data-balance]");
+    const addressInput = document.getElementById("badcoin-address");
+    const walletOutput = document.querySelector("[data-wallet-output]");
+    const walletStatus = document.querySelector("[data-wallet-status]");
+    const coldAddress = document.querySelector("[data-cold-address]");
+    const coldWif = document.querySelector("[data-cold-wif]");
+    const clearWalletBtn = document.querySelector("[data-clear-wallet]");
+    const printSheet = document.querySelector("[data-print-sheet]");
+    let currentColdWallet = null;
+
     document.querySelector("[data-refresh-balance]")?.addEventListener("click", () => {
       balance.textContent = "treasury lookup not connected yet";
     });
     document.querySelector("[data-reset-flow]")?.addEventListener("click", () => {
-      document.getElementById("badcoin-address").value = "";
+      addressInput.value = "";
       balance.textContent = "not checked";
     });
+    document.querySelector("[data-generate-wallet]")?.addEventListener("click", () => {
+      try {
+        currentColdWallet = generateBadCoinColdWallet();
+        coldAddress.value = currentColdWallet.address;
+        coldWif.value = currentColdWallet.wif;
+        walletOutput.hidden = false;
+        clearWalletBtn.disabled = false;
+        walletStatus.dataset.state = "ok";
+        walletStatus.textContent = "Generated locally. Save it before funding the address.";
+      } catch (error) {
+        currentColdWallet = null;
+        walletStatus.dataset.state = "error";
+        walletStatus.textContent = error instanceof Error ? error.message : "Wallet generation failed.";
+      }
+    });
+    clearWalletBtn?.addEventListener("click", clearColdWallet);
+    document.querySelector("[data-use-address]")?.addEventListener("click", () => {
+      if (!currentColdWallet) return;
+      addressInput.value = currentColdWallet.address;
+      addressInput.focus();
+      walletStatus.dataset.state = "ok";
+      walletStatus.textContent = "Public address copied into the faucet form.";
+    });
+    document.querySelector("[data-copy-address]")?.addEventListener("click", async () => {
+      if (!currentColdWallet) return;
+      await navigator.clipboard.writeText(currentColdWallet.address);
+      walletStatus.dataset.state = "ok";
+      walletStatus.textContent = "Public address copied.";
+    });
+    document.querySelector("[data-download-png]")?.addEventListener("click", () => {
+      if (!currentColdWallet) return;
+      const a = document.createElement("a");
+      a.href = drawColdWalletPng(currentColdWallet);
+      a.download = `badcoin-cold-wallet-${currentColdWallet.address.slice(0, 12)}.png`;
+      a.click();
+      walletStatus.dataset.state = "ok";
+      walletStatus.textContent = "PNG downloaded. Keep it offline.";
+    });
+    document.querySelector("[data-print-pdf]")?.addEventListener("click", () => {
+      if (!currentColdWallet) return;
+      printSheet.innerHTML = `
+        <h1>BadCoin Cold Wallet</h1>
+        <p>Generated in this browser. Keep the WIF private and offline.</p>
+        <h2>Public address</h2>
+        <code>${escapeHtml(currentColdWallet.address)}</code>
+        <h2>Private key WIF</h2>
+        <code>${escapeHtml(currentColdWallet.wif)}</code>
+        <h2>Created</h2>
+        <code>${escapeHtml(currentColdWallet.createdAt)}</code>
+      `;
+      window.print();
+    });
+
+    function clearColdWallet() {
+      currentColdWallet = null;
+      coldAddress.value = "";
+      coldWif.value = "";
+      walletOutput.hidden = true;
+      clearWalletBtn.disabled = true;
+      walletStatus.removeAttribute("data-state");
+      walletStatus.textContent = "Cleared from the page.";
+      printSheet.textContent = "";
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[ch]);
+    }
   </script>
 </body>
 </html>
