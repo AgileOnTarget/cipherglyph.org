@@ -205,6 +205,14 @@
       font-weight: 900;
       color: #4a6358;
     }
+    .treasury-status {
+      margin: 0;
+      min-height: 1rem;
+      font-family: ui-monospace, monospace;
+      font-size: 0.62rem;
+      color: #6d7f75;
+      text-align: center;
+    }
     .hero-body {
       display: grid;
       grid-template-columns: 1fr;
@@ -571,6 +579,7 @@
             <div class="treasury-labels" aria-hidden="true"><span>E</span><span>F</span></div>
           </div>
           <p class="treasury-caption">BadCoin available</p>
+          <p class="treasury-status" data-treasury-status>checking treasury</p>
         </aside>
       </div>
       <div class="hero-body">
@@ -697,12 +706,18 @@
     import { drawColdWalletPng, generateBadCoinColdWallet } from "./lib/badcoin-cold-wallet.mjs";
 
     const TREASURY_MAX_BAD = 1000;
-    const TREASURY_AVAILABLE_BAD = 1000;
+    const TREASURY_ADDRESS = "BADDoGmLTiLyv1wZjVqjzcYKz6WKkNYUZ8";
+    const TREASURY_SOURCES = [
+      { url: "./data/badcoin-treasury.json", label: "chain snapshot" },
+      { url: "http://127.0.0.1:8766/treasury/balance", label: "operator treasury" },
+      { url: `https://explorer.badcoin.dev/ext/getbalance/${TREASURY_ADDRESS}`, label: "explorer" },
+    ];
 
     const balance = document.querySelector("[data-balance]");
     const addressInput = document.getElementById("badcoin-address");
     const treasuryAvailable = document.querySelector("[data-treasury-available]");
     const treasuryGauge = document.querySelector("[data-treasury-gauge]");
+    const treasuryStatus = document.querySelector("[data-treasury-status]");
     const walletOutput = document.querySelector("[data-wallet-output]");
     const walletStatus = document.querySelector("[data-wallet-status]");
     const coldAddress = document.querySelector("[data-cold-address]");
@@ -711,10 +726,12 @@
     const printSheet = document.querySelector("[data-print-sheet]");
     let currentColdWallet = null;
 
-    renderTreasuryGauge(TREASURY_AVAILABLE_BAD, TREASURY_MAX_BAD);
+    renderTreasuryGauge(0, TREASURY_MAX_BAD);
+    refreshTreasuryGauge();
 
     document.querySelector("[data-refresh-balance]")?.addEventListener("click", () => {
-      balance.textContent = "treasury lookup not connected yet";
+      balance.textContent = "BadCoin address balance lookup is next";
+      refreshTreasuryGauge();
     });
     document.querySelector("[data-reset-flow]")?.addEventListener("click", () => {
       addressInput.value = "";
@@ -798,8 +815,65 @@
       const boundedMax = Math.max(1, Number(max) || 1);
       const boundedAvailable = Math.max(0, Math.min(boundedMax, Number(available) || 0));
       const ratio = boundedAvailable / boundedMax;
-      treasuryAvailable.textContent = Math.round(boundedAvailable).toLocaleString("en-US");
+      treasuryAvailable.textContent = boundedAvailable.toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      });
       treasuryGauge.style.setProperty("--treasury-ratio", String(ratio));
+    }
+
+    async function refreshTreasuryGauge() {
+      treasuryStatus.textContent = "checking treasury";
+      const found = await readTreasuryBalance();
+      if (!found.ok) {
+        treasuryStatus.textContent = "treasury unavailable";
+        return;
+      }
+      renderTreasuryGauge(found.balanceBad, found.maxBad || TREASURY_MAX_BAD);
+      const time = found.checkedAt ? new Date(found.checkedAt) : null;
+      treasuryStatus.textContent = time && !Number.isNaN(time.getTime())
+        ? `${found.label} ${time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`
+        : found.label;
+    }
+
+    async function readTreasuryBalance() {
+      for (const source of TREASURY_SOURCES) {
+        try {
+          const res = await fetch(source.url, {
+            method: "GET",
+            cache: "no-store",
+            headers: { Accept: "application/json, text/plain" },
+          });
+          if (!res.ok) continue;
+          const text = await res.text();
+          const parsed = parseTreasuryBalance(text, source.label);
+          if (parsed.ok) return parsed;
+        } catch {
+          continue;
+        }
+      }
+      return { ok: false };
+    }
+
+    function parseTreasuryBalance(text, label) {
+      const trimmed = String(text || "").trim();
+      const asNumber = Number(trimmed);
+      if (Number.isFinite(asNumber)) {
+        return { ok: true, label, balanceBad: asNumber, maxBad: TREASURY_MAX_BAD };
+      }
+      try {
+        const json = JSON.parse(trimmed);
+        const balanceBad = Number(json.balanceBad ?? json.availableBad ?? json.balance);
+        if (!Number.isFinite(balanceBad)) return { ok: false };
+        return {
+          ok: true,
+          label,
+          balanceBad,
+          maxBad: Number(json.maxBad) || TREASURY_MAX_BAD,
+          checkedAt: json.checkedAt || null,
+        };
+      } catch {
+        return { ok: false };
+      }
     }
   </script>
 </body>
